@@ -4,7 +4,7 @@ import math
 import csv
 import os
 
-from .professor import Professor
+from professor import Professor
 # This code has been tested using Python 3.6 interpreter and Linux (Ubuntu).
 # It should run under Windows, if anything you may need to make some adjustments for the file paths of the CSV files.
 
