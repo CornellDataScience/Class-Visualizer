@@ -12,23 +12,39 @@
     async function createViz() {
         let div = d3.select('#viz');
         let svg = div.append('svg')
-                     .attr('width', 500)
+                     .attr('width', 1000)
                      .attr('height', 500)
         let data = await d3.csv('classes_from_roster.csv');
+        data = data.slice(0, 3);
 
         console.log(data);
 
-        // data.forEach( (d) =>
-        //     console.log(d)
-        // )
+        let count = 100;
+        
+        data.forEach( (d) => {
 
-        svg.selectAll('circle')
-            .data(data)
-            .join('circle')
-            .attr('cx', d3.randomInt(0, 1000))
-            .attr('cy', d3.randomInt(0, 1000))
-            .attr('r', 5)
-            .style('fill', 'red')
+            svg.append('circle')
+                .attr('cx', count)
+                .attr('cy', 100)
+                .attr('r', 50)
+                .style('fill', 'red')
+            
+            svg.append("text")
+                .attr('x', count)
+                .attr('y', 100)
+                .attr('font-size', '16px')
+                .attr('fill', 'white')
+                .attr('text-anchor', 'middle')
+                .attr('alignment-baseline', 'central')
+                .text(d[0] + ' ' + d[1])
+            
+            count = count + 250
+            
+        })
+
+        
+        
+        
 
     }
     
