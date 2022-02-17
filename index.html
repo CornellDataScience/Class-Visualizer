@@ -1,0 +1,39 @@
+<html>
+<meta charset='utf-8'>
+<head>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+<h1>Class Visualizer</h1>
+<div id='viz'></div>
+<script>
+    async function createViz() {
+        let div = d3.select('#viz');
+        let svg = div.append('svg')
+                     .attr('width', 500)
+                     .attr('height', 500)
+        let data = await d3.csv('classes_from_roster.csv');
+
+        console.log(data);
+
+        // data.forEach( (d) =>
+        //     console.log(d)
+        // )
+
+        svg.selectAll('circle')
+            .data(data)
+            .join('circle')
+            .attr('cx', d3.randomInt(0, 1000))
+            .attr('cy', d3.randomInt(0, 1000))
+            .attr('r', 5)
+            .style('fill', 'red')
+
+    }
+    
+
+    createViz();
+
+</script>
+</body>
