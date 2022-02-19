@@ -57,7 +57,7 @@ class RateMyProfApi:
 
 
             for json_professor in json_response["professors"]:
-                print(json_professor)
+                #print(json_professor)
                 professor = Professor(
                     json_professor["tid"],
                     json_professor["tFname"],
