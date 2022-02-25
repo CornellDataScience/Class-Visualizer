@@ -7,6 +7,31 @@
 </head>
 <body>
 <h1>Class Visualizer</h1>
+
+<label id="prof-select-lab">Class: </label>
+    <select id= "prof-select-sel" style="width:200px; margin-right: 50px; margin-left: 5px; margin-top: 15px;">
+      <option value="cs-1110" selected>CS 1110</option>
+      <option value="cs-2110">CS 2110</option>
+      <option value="cs-3110">CS 3110</option>
+    </select>
+
+<!-- <div id = "search-bar">
+    <label id="class-select-lab">Class: </label>
+    <select id= "class-select-sel" style="width:200px; margin-right: 50px; margin-left: 5px; margin-top: 15px;">
+      <option value="AllUsers" selected>Choose a CClass</option>
+      <option value="Sport Analyst">Show Sports Analyst</option>
+      <option value="Actor or Actress">Show Actor or Actress</option>
+      <option value="NBA Player">Show NBA Player</option>
+      <option value="Musician">Show Musician</option>
+      <option value="Entrepreneur">Show Entrepreneur</option>
+      <option value="Cornell Faculty">Show Cornell Faculty</option>
+    </select>
+
+    <label for="keyword-select" id="word">Top Word: </label>
+    <select id="keyword-select" style="width:200px; margin-left: 5px; margin-top: 15px;">
+    </select>
+  </div> -->
+
 <div id='viz'></div>
 <script>
     async function createViz() {
@@ -14,33 +39,45 @@
         let svg = div.append('svg')
                      .attr('width', 1000)
                      .attr('height', 500)
-        let data = await d3.csv('classes_from_roster.csv');
-        data = data.slice(0, 3);
+        let classData = await d3.csv('Classes_With_Medians.csv');
+        let profData = await d3.csv('RMP/RMP.csv');
 
-        console.log(data);
-
-        let count = 100;
-        
-        data.forEach( (d) => {
-
-            svg.append('circle')
-                .attr('cx', count)
-                .attr('cy', 100)
-                .attr('r', 50)
-                .style('fill', 'red')
-            
-            svg.append("text")
-                .attr('x', count)
-                .attr('y', 100)
-                .attr('font-size', '16px')
-                .attr('fill', 'white')
-                .attr('text-anchor', 'middle')
-                .attr('alignment-baseline', 'central')
-                .text(d[0] + ' ' + d[1])
-            
-            count = count + 250
-            
+        let profs = [];
+        classData.forEach(d => {
+            profs.push(d.Professor);
         })
+
+        console.log(profs);
+
+        console.log(classData);
+        console.log(profData);
+
+        // data = data.slice(0, 3);
+
+        // console.log(data);
+
+        // let count = 100;
+        
+        // data.forEach( (d) => {
+
+        //     svg.append('circle')
+        //         .attr('cx', count)
+        //         .attr('cy', 100)
+        //         .attr('r', 50)
+        //         .style('fill', 'red')
+            
+        //     svg.append("text")
+        //         .attr('x', count)
+        //         .attr('y', 100)
+        //         .attr('font-size', '16px')
+        //         .attr('fill', 'white')
+        //         .attr('text-anchor', 'middle')
+        //         .attr('alignment-baseline', 'central')
+        //         .text(d[0] + ' ' + d[1])
+            
+        //     count = count + 250
+            
+        // })
 
         
         
