@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
+import fullDataFile from './data/Full_Data.csv';
 
 export default class HomePage extends Component {
 
@@ -21,7 +22,7 @@ export default class HomePage extends Component {
         //             .attr('height', 500)
         let classData = await d3.csv('Classes_With_Medians.csv');
         let profData = await d3.csv('RMP/RMP.csv');
-        let data = await d3.csv('Full_Data.csv');
+        let data = await d3.csv(fullDataFile);
         this.setState({fullData: data});
 
         let profs = [];
