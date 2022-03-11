@@ -13,7 +13,6 @@ precoMergeRMP.ipynb
 - makeing preco columns and merging with RMP data
 Full_Data.csv
 - everything we have to date (2/24), RMP, medians, roster
+Reddit Scraping.ipynb 
+- Code for scraping relevant reddit posts
 
--Majors scraped: "CS", "INFO", "ECE", "ECON", "ENGL", "PHIL", "AAS", "AEM", "AEP", "AGSCI", "AIIS", "AIRS",
-               "AKKAD", "ALS", "AMST", "ANSC", "ANTHR", "BTRY", "BIOAP", "BIOEE", "BIOG", "BIOMG", "BIOMI",
-               "BIOMS", "BIONB", "BME"
