@@ -87,6 +87,9 @@ export default class HomePage extends Component {
         this.createViz();
         d3.select('#prof-select-sel').on('change', this.changeClass);
         d3.select('#class-search').on('click', this.updateSearch);
+
+        console.log('FULL DATA');
+        console.log(this.state.fullData);
     }
 
 
