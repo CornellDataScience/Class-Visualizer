@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Button from 'react-bootstrap/Button';
 import * as d3 from 'd3';
 import fullDataFile from './data/Full_Data.csv';
 
@@ -13,6 +14,7 @@ export default class HomePage extends Component {
         this.createViz = this.createViz.bind(this);
         this.changeClass = this.changeClass.bind(this);
         this.updateSearch = this.updateSearch.bind(this);
+        this.plotClassInfo = this.plotClassInfo.bind(this);
     }
 
     async createViz() {
@@ -29,6 +31,48 @@ export default class HomePage extends Component {
         classData.forEach(d => {
             profs.push(d.Professor);
         })
+    }
+
+    plotClassInfo() {
+        console.log(5);
+        let svg = d3.select("#class-info-plot")
+                    .append('svg')
+                    .attr('height', 500)
+                    .attr('width', 500)
+        
+        console.log(svg);
+
+        let classes = [{'Class': 'CS 1110', 'Median': 'A', 'Num': 0}, {'Class': 'CS 2110', 'Median': 'A+', 'Num': 1}];
+
+        let box = svg.selectAll('g')
+                     .data(classes)
+                     .enter()
+                        .append('g')
+        
+        box.selectAll('rect')
+                     .data(classes)
+                     .join('rect')
+                     .attr('x', 150)
+                     .attr('y', 50)
+                     .attr('width', 200)
+                     .attr('height', 200)
+                     .style('fill', 'orange')
+                     .text('test')
+        
+        let list = d3.select('#class-info');
+        list.selectAll('li.class-info-list')
+            .data(classes)
+            .join('li')
+            .attr('class', 'class-info-list')
+            .text()
+        
+        // Top text gets hidden - need to have separate g tags for the box and text, and raise the text one
+        let text = box.append('text')
+            .attr('x', 150)
+            .attr('y', d => d['Num'] * 100 + 100)
+            .text(d => d.Class + ' has an ' + d.Median + ' median')
+        text.raise()
+
     }
 
     changeClass() {
@@ -90,12 +134,20 @@ export default class HomePage extends Component {
 
         console.log('FULL DATA');
         console.log(this.state.fullData);
+
     }
 
 
     render() {
+        let list;
+        if (this.state.showPlot) {
+            list = <ul id = 'class-info'>Class Info</ul>;
+        } else {
+            list = <ul id = 'class-info'></ul>;
+        }
         return (
-            <div className = "Home-Page">
+            <div className = "Home-Page App">
+                
                 <h1>Class Visualizer</h1>
 
                 <div>
@@ -119,6 +171,7 @@ export default class HomePage extends Component {
                     <input id = 'med-grade-text' type="text"></input>
                 </div>
 
+                <br></br>
                 <button id = 'class-search'>Search</button>
                 </div>
 
@@ -132,6 +185,15 @@ export default class HomePage extends Component {
                     <option value="CS 3110">CS 3110</option>
                     </select>
                 <div id="selected-class-info"></div>
+                <div style={{align:"center"}}>
+                    <br></br>
+                    <Button variant="primary" onClick={this.plotClassInfo}>Primary</Button>{' '}
+                    {list}
+                    <div id="class-info-plot"></div>
+                </div>
+
+                
+                
             </div>
         )
     }
