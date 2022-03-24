@@ -12,7 +12,10 @@ Cornell_Median_Grades.csv
 precoMergeRMP.ipynb 
 - makeing preco columns and merging with RMP data
 Full_Data.csv
-- everything we have to date (2/24), RMP, medians, roster
+- everything we previously had (2/24), RMP, medians, roster
+FullerData_CUReviews.csv
+- everything we have to date (3/23), RMP, medians, roster, CU Reviews
 Reddit Scraping.ipynb 
 - Code for scraping relevant reddit posts
-
+CU_Reviews_Scraping.ipynb
+- Code for scraping from CU Reviews
