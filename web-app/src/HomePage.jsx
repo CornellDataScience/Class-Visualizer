@@ -8,7 +8,8 @@ export default class HomePage extends Component {
     constructor() {
         super();
         this.state = {
-            fullData: {}
+            fullData: [],
+            selectedClasses: []
         };
 
         this.createViz = this.createViz.bind(this);
@@ -34,13 +35,10 @@ export default class HomePage extends Component {
     }
 
     plotClassInfo() {
-        console.log(5);
         let svg = d3.select("#class-info-plot")
                     .append('svg')
                     .attr('height', 500)
                     .attr('width', 500)
-        
-        console.log(svg);
 
         let classes = [{'Class': 'CS 1110', 'Median': 'A', 'Num': 0}, {'Class': 'CS 2110', 'Median': 'A+', 'Num': 1}];
 
@@ -72,6 +70,18 @@ export default class HomePage extends Component {
             .attr('y', d => d['Num'] * 100 + 100)
             .text(d => d.Class + ' has an ' + d.Median + ' median')
         text.raise()
+
+        // Update Table
+        let tableBody = d3.select('#class-info-table tbody');
+        let tableRows = tableBody.selectAll('tr')
+                                 .data(this.state.selectedClasses)
+                                 .join('tr')
+        let tableRowEntries = tableRows.selectAll('td')
+                                 .data( (d) => {
+                                     return [d['Course_Name'], d['Professor'], d['Semester (Ex: SP21)'], d['Difficulty']]
+                                 })
+                                 .join('td')
+                                 .text( d => d )
 
     }
 
@@ -125,9 +135,12 @@ export default class HomePage extends Component {
           classes = classes.filter(class_ => class_['Median Grade'] === medGrade);
           console.log(classes);
         }
+
+        this.setState({selectedClasses: classes});
       }
 
     componentDidMount() {
+
         this.createViz();
         d3.select('#prof-select-sel').on('change', this.changeClass);
         d3.select('#class-search').on('click', this.updateSearch);
@@ -139,6 +152,7 @@ export default class HomePage extends Component {
 
 
     render() {
+        console.log('SELECTED CLASSES', this.state.selectedClasses);
         let list;
         if (this.state.showPlot) {
             list = <ul id = 'class-info'>Class Info</ul>;
@@ -187,9 +201,33 @@ export default class HomePage extends Component {
                 <div id="selected-class-info"></div>
                 <div style={{align:"center"}}>
                     <br></br>
-                    <Button variant="primary" onClick={this.plotClassInfo}>Primary</Button>{' '}
+                    <Button variant="primary" onClick={this.plotClassInfo}>Update Table</Button>{' '}
+
+                    <br></br>
+                    <br></br>
+                    
+                    <table id="class-info-table">
+                        <thead>
+                            <tr>
+                                <th>Class</th>
+                                <th>Professor</th>
+                                <th>Semester</th>
+                                <th>Additional Info</th>
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+                        
+                        {/* <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                        </tr> */}
+                    </table>
+
                     {list}
                     <div id="class-info-plot"></div>
+
                 </div>
 
                 
