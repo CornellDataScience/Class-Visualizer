@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
 import * as d3 from 'd3';
+import $ from 'jquery';
 import fullDataFile from './data/FullerData_CUReviews.csv';
 
 export default class HomePage extends Component {
@@ -38,7 +39,7 @@ export default class HomePage extends Component {
         let svg = d3.select("#class-info-plot")
                     .append('svg')
                     .attr('height', 500)
-                    .attr('width', 500)
+                    .attr('width', 1000)
 
         let classes = [{ 'Class': 'CS 1110', 'Median': 'A', 'Num': 0 }, { 'Class': 'CS 2110', 'Median': 'A+', 'Num': 1 }];
 
@@ -73,15 +74,31 @@ export default class HomePage extends Component {
 
         // Update Table
         let tableBody = d3.select('#class-info-table tbody');
+        let tableHeader = d3.select('#class-info-header');
         let tableRows = tableBody.selectAll('tr')
                                  .data(this.state.selectedClasses)
                                  .join('tr')
+
         let tableRowEntries = tableRows.selectAll('td')
                                  .data( (d) => {
-                                     return [d['Course_Name'], d['Professor'], d['Semester (Ex: SP21)'], d['Difficulty']]
+                                     return [d['Dept + Number'], d['Course_Name'], d['Professor'], d['Semester (Ex: SP21)']]
                                  })
                                  .join('td')
                                  .text( d => d )
+        //tableHeader.append("th").text('Additional Info');
+        console.log(tableHeader);
+        d3.select('#class-info-header-row').selectAll('th')
+            .data(['Course #', 'Class', 'Professor', 'Semester', 'Additional Info'])
+            .join("th")
+            .text(d => d) //'Additional Info');
+        tableRows.selectAll('td.table-button')
+                 .data( d => [d] )
+                 .attr('class', 'table-button')
+                 .join('td')
+                    .append('button')
+                    .text( (d) => 'Test' )
+                    .on('click', d => alert(d.srcElement.__data__['Number']))
+
 
     }
 
@@ -110,31 +127,40 @@ export default class HomePage extends Component {
     }
 
     updateSearch() {
+        console.log('UPDATING');
         let departmentChecked = d3.select('#check-1').property('checked');
         let profChecked = d3.select('#check-2').property('checked');
-        let medGradeChecked = d3.select('#check-3').property('checked');
+        //let medGradeChecked = d3.select('#check-3').property('checked');
 
         let classes = this.state.fullData;
 
+        console.log('before dep')
         if (departmentChecked) {
             let department = d3.select('#department-text').property('value');
             console.log(department);
             classes = classes.filter(class_ => class_['Dept'] === department);
             console.log(classes);
         }
-
+        console.log('before prof')
         if (profChecked) {
             // filter the previous classes
             let prof = d3.select('#prof-text').property('value');
-            classes = classes.filter(class_ => class_['Professor'] === prof);
+            console.log('PROF', prof)
+            classes = classes.filter(class_ => class_['Professor'].toLowerCase().includes(prof.toLowerCase()));
             console.log(classes)
         }
 
-        if (medGradeChecked) {
-            let medGrade = d3.select('#med-grade-text').property('value');
-            classes = classes.filter(class_ => class_['Median Grade'] === medGrade);
-            console.log(classes);
-        }
+        // if (medGradeChecked) {
+        //     let medGrade = d3.select('#med-grade-text').property('value');
+        //     classes = classes.filter(class_ => class_['Median Grade'] === medGrade);
+        //     console.log(classes);
+        // }
+
+        classes.sort((d1, d2) => {
+            return Number(d1['Number']) - Number(d2['Number']);
+          });
+        
+        console.log('UPDATED CLASSES', classes)
 
         this.setState({selectedClasses: classes});
       }
@@ -177,12 +203,39 @@ export default class HomePage extends Component {
                         <input type="checkbox" name="check-2" value="check-2" id="check-2" />
                         <label for="check-2">Professor</label>
                         <input id='prof-text' type="text"></input>
+                        <br></br>
+                        <br></br>
                     </div>
 
                     <div>
-                        <input type="checkbox" name="check-3" value="check-3" id="check-3" />
-                        <label for="check-3">Median Grade</label>
-                        <input id='med-grade-text' type="text"></input>
+                        <label>Median Grade</label>
+                        {/* <input id='med-grade-text' type="text"></input> */}
+                        <br></br>
+                        <br></br>
+                        <input type="checkbox" name="check-med-1" value="check-med-1" class="check-med" />
+                        <label for="check-med-1">A+</label>
+
+                        <input type="checkbox" name="check-med-2" value="check-med-2" class="check-med" />
+                        <label for="check-med-2">A</label>
+
+                        <input type="checkbox" name="check-med-3" value="check-med-3" class="check-med" />
+                        <label for="check-med-3">A-</label>
+
+                        <input type="checkbox" name="check-med-4" value="check-med-4" class="check-med" />
+                        <label for="check-med-4">B+</label>
+
+                        <input type="checkbox" name="check-med-2" value="check-med-5" class="check-med" />
+                        <label for="check-med-5">B</label>
+
+                        <input type="checkbox" name="check-med-3" value="check-med-6" class="check-med" />
+                        <label for="check-med-6">B-</label>
+
+                    </div>
+
+                    <div>
+                        <input type="checkbox" name="check-4" value="check-4" id="check-4" />
+                        <label for="check-4"></label>
+
                     </div>
 
                     <br></br>
@@ -207,12 +260,12 @@ export default class HomePage extends Component {
                     <br></br>
                     
                     <table id="class-info-table">
-                        <thead>
-                            <tr>
+                        <thead id="class-info-header">
+                            <tr id="class-info-header-row">
+                                {/* <th>Course #</th>
                                 <th>Class</th>
                                 <th>Professor</th>
-                                <th>Semester</th>
-                                <th>Additional Info</th>
+                                <th>Semester</th> */}
                             </tr>
                         </thead>
 
