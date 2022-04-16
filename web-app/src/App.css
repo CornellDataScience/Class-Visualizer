@@ -32,6 +32,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -42,7 +43,9 @@
   margin-right: auto;
 }
 
-table, th, td {
+table,
+th,
+td {
   border: 1px solid black;
   text-align: center;
 }
@@ -60,19 +63,20 @@ table, th, td {
 #department-text:focus {
   background-color: lightblue;
   width: 60%;
+  padding: 10px;
 }
 
 .col {
-    float: left;
-    width: 20%;
-    font-size: 24px;
-    padding: 10px;
+  float: left;
+  width: 20%;
+  font-size: 24px;
+  padding: 10px;
 }
 
 .row {
-    padding: 5px 5px; 
-    height: auto;
-    overflow: auto;
+  padding: 5px 5px;
+  height: auto;
+  overflow: auto;
 }
 
 .text-input {

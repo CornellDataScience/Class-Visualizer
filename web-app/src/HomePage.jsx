@@ -295,7 +295,7 @@ export default class HomePage extends Component {
                             <div>
                                 <input type="checkbox" name="check-2" value="check-2" id="check-2" />
                                 <label for="check-2">Professor</label>
-                                <input class="text-input" id='prof-text' type="text"></input>
+                                <input class="text-input" id='prof-text' type="text" placeholder="Enter Prof Name..."></input>
                                 <br></br>
                                 <br></br>
                             </div>
@@ -305,7 +305,7 @@ export default class HomePage extends Component {
                             <div>
                                 <input type="checkbox" name="check-4" value="check-4" id="check-4" />
                                 <label for="check-4">Course Number</label>
-                                <input class="text-input" id='course-num-text' type="text"></input>
+                                <input class="text-input" id='course-num-text' type="text" placeholder="ex: 1110"></input>
                                 <br></br>
                                 <br></br>
                             </div>
@@ -320,84 +320,114 @@ export default class HomePage extends Component {
                         {/* <input id='med-grade-text' type="text"></input> */}
                         <br></br>
                         <br></br>
-                        <input type="checkbox" id="check-med-1" value="check-med-1" class="check-med" />
-                        <label for="check-med-1">A+</label>
+                        <div class="row">
+                            <div class="col">
+                                <input type="checkbox" id="check-med-1" value="check-med-1" class="check-med" />
+                                <label for="check-med-1">A+</label>
+                            </div>
 
-                        <input type="checkbox" id="check-med-2" value="check-med-2" class="check-med" />
-                        <label for="check-med-2">A</label>
+                            <div class="col">
+                                <input type="checkbox" id="check-med-2" value="check-med-2" class="check-med" />
+                                <label for="check-med-2">A</label>
+                            </div>
 
-                        <input type="checkbox" id="check-med-3" value="check-med-3" class="check-med" />
-                        <label for="check-med-3">A-</label>
+                            <div class="col">
+                                <input type="checkbox" id="check-med-3" value="check-med-3" class="check-med" />
+                                <label for="check-med-3">A-</label>
+                            </div>
 
-                        <input type="checkbox" id="check-med-4" value="check-med-4" class="check-med" />
-                        <label for="check-med-4">B+</label>
+                            <div class="col">
+                                <input type="checkbox" id="check-med-4" value="check-med-4" class="check-med" />
+                                <label for="check-med-4">B+</label>
+                            </div>
 
-                        <input type="checkbox" id="check-med-5" value="check-med-5" class="check-med" />
-                        <label for="check-med-5">B</label>
+                            <div class="col">
+                                <input type="checkbox" id="check-med-5" value="check-med-5" class="check-med" />
+                                <label for="check-med-5">B</label>
+                            </div>
 
-                        <input type="checkbox" id="check-med-6" value="check-med-6" class="check-med" />
-                        <label for="check-med-6">B-</label>
+                            <div class="col">
+                                <input type="checkbox" id="check-med-6" value="check-med-6" class="check-med" />
+                                <label for="check-med-6">B-</label>
+                            </div>
+                        </div>
 
                         <br></br>
                         <br></br>
                     </div>
 
-                    <div>
-                        <input type="checkbox" name="check-5" value="check-5" id="check-5" />
-                        <label for="check-5">Course Name</label>
-                        <input id='course-name-text' type="text"></input>
-                        <br></br>
-                        <br></br>
+                    <div class="row">
+                        <div class="col">
+                            <div>
+                                <input type="checkbox" name="check-5" value="check-5" id="check-5" />
+                                <label for="check-5">Course Name</label>
+                                <input id='course-name-text' type="text" placeholder="Enter course name..."></input>
+                                <br></br>
+                                <br></br>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div>
+                                <input type="checkbox" name="check-6" value="check-6" id="check-6" />
+                                <label for="check-6">Professor Difficulty</label>
+                                <input id='prof-diff-text' type="text" placeholder="0...5"></input>
+                                <br></br>
+                                <br></br>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div>
+                                <input type="checkbox" name="check-7" value="check-7" id="check-7" />
+                                <label for="check-7">Class Difficulty</label>
+                                <input id='class-diff-text' type="text" placeholder="From CUReviews, 0...5"></input>
+                                <br></br>
+                                <br></br>
+                            </div>
+                        </div>
                     </div>
 
-                    <div>
-                        <input type="checkbox" name="check-6" value="check-6" id="check-6" />
-                        <label for="check-6">Professor Difficulty</label>
-                        <input id='prof-diff-text' type="text"></input>
-                        <br></br>
-                        <br></br>
-                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div>
+                                <input type="checkbox" name="check-8" value="check-8" id="check-8" />
+                                <label for="check-8">Class Rating</label>
+                                <input id='class-rat-text' type="text" placeholder="From CUReviews, 0...5"></input>
+                                <br></br>
+                                <br></br>
+                            </div>
+                        </div>
 
-                    <div>
-                        <input type="checkbox" name="check-7" value="check-7" id="check-7" />
-                        <label for="check-7">Class Difficulty</label>
-                        <input id='class-diff-text' type="text"></input>
-                        <br></br>
-                        <br></br>
-                    </div>
+                        <div class="col">
+                            <div>
+                                <input type="checkbox" name="check-9" value="check-9" id="check-9" />
+                                <label for="check-9">Class Workload</label>
+                                <input id='class-work-text' type="text" placeholder="From CUReviews, 0...5"></input>
+                                <br></br>
+                                <br></br>
+                            </div>
+                        </div>
 
-                    <div>
-                        <input type="checkbox" name="check-8" value="check-8" id="check-8" />
-                        <label for="check-8">Class Rating</label>
-                        <input id='class-rat-text' type="text"></input>
-                        <br></br>
-                        <br></br>
-                    </div>
+                        <div class="col">
+                            <div>
+                                <input type="checkbox" name="check-10" value="check-10" id="check-10" />
+                                <label for="check-10">Start Time</label>
+                                <input id='start-time-text' type="text"></input>
+                                <br></br>
+                                <br></br>
+                            </div>
+                        </div>
 
-                    <div>
-                        <input type="checkbox" name="check-9" value="check-9" id="check-9" />
-                        <label for="check-9">Class Workload</label>
-                        <input id='class-work-text' type="text"></input>
-                        <br></br>
-                        <br></br>
+                        <div class="col">
+                            <div>
+                                <input type="checkbox" name="check-11" value="check-11" id="check-11" />
+                                <label for="check-11">End Time</label>
+                                <input id='end-time-text' type="text"></input>
+                                <br></br>
+                                <br></br>
+                            </div>
+                        </div>
                     </div>
-
-                    <div>
-                        <input type="checkbox" name="check-10" value="check-10" id="check-10" />
-                        <label for="check-10">Start Time</label>
-                        <input id='start-time-text' type="text"></input>
-                        <br></br>
-                        <br></br>
-                    </div>
-
-                    <div>
-                        <input type="checkbox" name="check-11" value="check-11" id="check-11" />
-                        <label for="check-11">End Time</label>
-                        <input id='end-time-text' type="text"></input>
-                        <br></br>
-                        <br></br>
-                    </div>
-
                     <br></br>
                 </div>
 
