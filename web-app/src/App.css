@@ -50,3 +50,31 @@ table, th, td {
 .check-med {
   margin-left: 50px;
 }
+
+
+#department-text {
+  border: 1px solid blue;
+  transition: width 0.4s ease-in-out;
+}
+
+#department-text:focus {
+  background-color: lightblue;
+  width: 60%;
+}
+
+.col {
+    float: left;
+    width: 20%;
+    font-size: 24px;
+    padding: 10px;
+}
+
+.row {
+    padding: 5px 5px; 
+    height: auto;
+    overflow: auto;
+}
+
+.text-input {
+  width: 200px;
+}

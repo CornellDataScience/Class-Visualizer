@@ -245,20 +245,40 @@ export default class HomePage extends Component {
                 <div>
                     <br />
                     <b>Filter By</b>
-                    <div>
-                        <input type="checkbox" name="check-1" value="check-1" id="check-1" />
-                        <label for="check-1">Department</label>
-                        <input id='department-text' type="text"></input>
-                        <br></br>
-                        <br></br>
-                    </div>
 
-                    <div>
-                        <input type="checkbox" name="check-2" value="check-2" id="check-2" />
-                        <label for="check-2">Professor</label>
-                        <input id='prof-text' type="text"></input>
-                        <br></br>
-                        <br></br>
+                    <div class="row">
+                        <div class="col">
+                            <div>
+                                <input type="checkbox" name="check-1" value="check-1" id="check-1" />
+                                <label for="check-1">Department</label>
+                                <input class="text-input" id='department-text' type="text" placeholder="Enter Department..."></input>
+                                <br></br>
+                                <br></br>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div>
+                                <input type="checkbox" name="check-2" value="check-2" id="check-2" />
+                                <label for="check-2">Professor</label>
+                                <input class="text-input" id='prof-text' type="text"></input>
+                                <br></br>
+                                <br></br>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div>
+                                <input type="checkbox" name="check-4" value="check-4" id="check-4" />
+                                <label for="check-4">Course Number</label>
+                                <input class="text-input" id='course-num-text' type="text"></input>
+                                <br></br>
+                                <br></br>
+                            </div>
+
+                        </div>
+
+
                     </div>
 
                     <div>
@@ -284,14 +304,6 @@ export default class HomePage extends Component {
                         <input type="checkbox" id="check-med-6" value="check-med-6" class="check-med" />
                         <label for="check-med-6">B-</label>
 
-                        <br></br>
-                        <br></br>
-                    </div>
-
-                    <div>
-                        <input type="checkbox" name="check-4" value="check-4" id="check-4" />
-                        <label for="check-4">Course Number</label>
-                        <input id='course-num-text' type="text"></input>
                         <br></br>
                         <br></br>
                     </div>
