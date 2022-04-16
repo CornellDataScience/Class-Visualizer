@@ -41,36 +41,36 @@ export default class HomePage extends Component {
             .attr('height', 500)
             .attr('width', 1000)
 
-        let classes = [{ 'Class': 'CS 1110', 'Median': 'A', 'Num': 0 }, { 'Class': 'CS 2110', 'Median': 'A+', 'Num': 1 }];
+        //let classes = [{ 'Class': 'CS 1110', 'Median': 'A', 'Num': 0 }, { 'Class': 'CS 2110', 'Median': 'A+', 'Num': 1 }];
 
-        let box = svg.selectAll('g')
-            .data(classes)
-            .enter()
-            .append('g')
+        // let box = svg.selectAll('g')
+        //  .data(classes)
+        //  .enter()
+        //   .append('g')
 
-        box.selectAll('rect')
-            .data(classes)
-            .join('rect')
-            .attr('x', 150)
-            .attr('y', 50)
-            .attr('width', 200)
-            .attr('height', 200)
-            .style('fill', 'orange')
-            .text('test')
+        // box.selectAll('rect')
+        //     .data(classes)
+        //     .join('rect')
+        //     .attr('x', 150)
+        //     .attr('y', 50)
+        //     .attr('width', 200)
+        //     .attr('height', 200)
+        //     .style('fill', 'orange')
+        //     .text('test')
 
         let list = d3.select('#class-info');
-        list.selectAll('li.class-info-list')
-            .data(classes)
-            .join('li')
-            .attr('class', 'class-info-list')
-            .text()
+        // list.selectAll('li.class-info-list')
+        //     .data(classes)
+        //     .join('li')
+        //     .attr('class', 'class-info-list')
+        //     .text()
 
         // Top text gets hidden - need to have separate g tags for the box and text, and raise the text one
-        let text = box.append('text')
-            .attr('x', 150)
-            .attr('y', d => d['Num'] * 100 + 100)
-            .text(d => d.Class + ' has an ' + d.Median + ' median')
-        text.raise()
+        // let text = box.append('text')
+        //     .attr('x', 150)
+        //     .attr('y', d => d['Num'] * 100 + 100)
+        //     .text(d => d.Class + ' has an ' + d.Median + ' median')
+        // text.raise()
 
         // Update Table
         let tableBody = d3.select('#class-info-table tbody');
@@ -286,7 +286,7 @@ export default class HomePage extends Component {
                                 <input type="checkbox" name="check-1" value="check-1" id="check-1" />
                                 <label for="check-1">Department</label>
                                 <input class="text-input" id='department-text' type="text" placeholder="Enter Department..."></input>
-                                <br></br>
+
                                 <br></br>
                             </div>
                         </div>
@@ -297,7 +297,6 @@ export default class HomePage extends Component {
                                 <label for="check-2">Professor</label>
                                 <input class="text-input" id='prof-text' type="text" placeholder="Enter Prof Name..."></input>
                                 <br></br>
-                                <br></br>
                             </div>
                         </div>
 
@@ -307,7 +306,6 @@ export default class HomePage extends Component {
                                 <label for="check-4">Course Number</label>
                                 <input class="text-input" id='course-num-text' type="text" placeholder="ex: 1110"></input>
                                 <br></br>
-                                <br></br>
                             </div>
 
                         </div>
@@ -316,9 +314,8 @@ export default class HomePage extends Component {
                     </div>
 
                     <div>
-                        <label>Median Grade</label>
+                        <label class="med-grade-text">Median Grade</label>
                         {/* <input id='med-grade-text' type="text"></input> */}
-                        <br></br>
                         <br></br>
                         <div class="row">
                             <div class="col">
@@ -352,8 +349,6 @@ export default class HomePage extends Component {
                             </div>
                         </div>
 
-                        <br></br>
-                        <br></br>
                     </div>
 
                     <div class="row">
@@ -361,8 +356,7 @@ export default class HomePage extends Component {
                             <div>
                                 <input type="checkbox" name="check-5" value="check-5" id="check-5" />
                                 <label for="check-5">Course Name</label>
-                                <input id='course-name-text' type="text" placeholder="Enter course name..."></input>
-                                <br></br>
+                                <input class="text-input" id='course-name-text' type="text" placeholder="Enter course name..."></input>
                                 <br></br>
                             </div>
                         </div>
@@ -370,8 +364,7 @@ export default class HomePage extends Component {
                             <div>
                                 <input type="checkbox" name="check-6" value="check-6" id="check-6" />
                                 <label for="check-6">Professor Difficulty</label>
-                                <input id='prof-diff-text' type="text" placeholder="0...5"></input>
-                                <br></br>
+                                <input class="text-input" id='prof-diff-text' type="text" placeholder="From RateMyProf, 0...5"></input>
                                 <br></br>
                             </div>
                         </div>
@@ -380,8 +373,7 @@ export default class HomePage extends Component {
                             <div>
                                 <input type="checkbox" name="check-7" value="check-7" id="check-7" />
                                 <label for="check-7">Class Difficulty</label>
-                                <input id='class-diff-text' type="text" placeholder="From CUReviews, 0...5"></input>
-                                <br></br>
+                                <input class="text-input" id='class-diff-text' type="text" placeholder="From CUReviews, 0...5"></input>
                                 <br></br>
                             </div>
                         </div>
@@ -392,8 +384,7 @@ export default class HomePage extends Component {
                             <div>
                                 <input type="checkbox" name="check-8" value="check-8" id="check-8" />
                                 <label for="check-8">Class Rating</label>
-                                <input id='class-rat-text' type="text" placeholder="From CUReviews, 0...5"></input>
-                                <br></br>
+                                <input class="text-input" id='class-rat-text' type="text" placeholder="From CUReviews, 0...5"></input>
                                 <br></br>
                             </div>
                         </div>
@@ -402,8 +393,7 @@ export default class HomePage extends Component {
                             <div>
                                 <input type="checkbox" name="check-9" value="check-9" id="check-9" />
                                 <label for="check-9">Class Workload</label>
-                                <input id='class-work-text' type="text" placeholder="From CUReviews, 0...5"></input>
-                                <br></br>
+                                <input class="text-input" id='class-work-text' type="text" placeholder="From CUReviews, 0...5"></input>
                                 <br></br>
                             </div>
                         </div>
@@ -412,8 +402,7 @@ export default class HomePage extends Component {
                             <div>
                                 <input type="checkbox" name="check-10" value="check-10" id="check-10" />
                                 <label for="check-10">Start Time</label>
-                                <input id='start-time-text' type="text"></input>
-                                <br></br>
+                                <input class="text-input" id='start-time-text' type="text" placeholder="Enter start time..."></input>
                                 <br></br>
                             </div>
                         </div>
@@ -422,8 +411,7 @@ export default class HomePage extends Component {
                             <div>
                                 <input type="checkbox" name="check-11" value="check-11" id="check-11" />
                                 <label for="check-11">End Time</label>
-                                <input id='end-time-text' type="text"></input>
-                                <br></br>
+                                <input class="text-input" id='end-time-text' type="text" placeholder="Enter end time..."></input>
                                 <br></br>
                             </div>
                         </div>
@@ -440,6 +428,7 @@ export default class HomePage extends Component {
 
                     <br></br>
                     <br></br>
+
 
                     <table id="class-info-table">
                         <thead id="class-info-header">

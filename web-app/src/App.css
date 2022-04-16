@@ -55,15 +55,39 @@ td {
 }
 
 
-#department-text {
+#department-text,
+#prof-text,
+#course-num-text,
+#course-name-text,
+#course-name-text,
+#prof-diff-text,
+#class-diff-text,
+#class-rat-text,
+#class-work-text,
+#start-time-text,
+#end-time-text {
   border: 1px solid blue;
   transition: width 0.4s ease-in-out;
 }
 
-#department-text:focus {
+
+#department-text:focus,
+#prof-text:focus,
+#course-num-text:focus,
+#course-name-text:focus,
+#prof-diff-text:focus,
+#class-diff-text:focus,
+#class-rat-text:focus,
+#class-work-text:focus,
+#start-time-text:focus,
+#end-time-text:focus {
   background-color: lightblue;
   width: 60%;
   padding: 10px;
+}
+
+.med-grade-text {
+  font-size: 24px;
 }
 
 .col {
@@ -81,4 +105,5 @@ td {
 
 .text-input {
   width: 200px;
+
 }
