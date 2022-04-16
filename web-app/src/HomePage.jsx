@@ -81,14 +81,14 @@ export default class HomePage extends Component {
 
         let tableRowEntries = tableRows.selectAll('td')
             .data((d) => {
-                return [d['Dept + Number'], d['Course_Name'], d['Professor'], d['Semester (Ex: SP21)']]
+                return [d['Dept + Number'], d['Course_Name'], d['Professor']]
             })
             .join('td')
             .text(d => d)
         //tableHeader.append("th").text('Additional Info');
         console.log(tableHeader);
         d3.select('#class-info-header-row').selectAll('th')
-            .data(['Course #', 'Class', 'Professor', 'Semester', 'Additional Info'])
+            .data(['Course #', 'Class', 'Professor', 'Additional Info'])
             .join("th")
             .text(d => d) //'Additional Info');
         tableRows.selectAll('td.table-button')
@@ -160,7 +160,11 @@ export default class HomePage extends Component {
         let courseNumChecked = d3.select('#check-4').property('checked');
         let courseNameChecked = d3.select('#check-5').property('checked');
         let profDifChecked = d3.select('#check-6').property('checked');
-
+        let classDifChecked = d3.select('#check-7').property('checked')
+        let classRatingChecked = d3.select('#check-8').property('checked')
+        let classWorloadChecked = d3.select('#check-9').property('checked')
+        let startTimeChecked = d3.select('#check-10').property('checked')
+        let endTimeChecked = d3.select('#check-11').property('checked')
 
         //let medGradeChecked = d3.select('#check-3').property('checked');
 
@@ -200,8 +204,38 @@ export default class HomePage extends Component {
         if (profDifChecked) {
             // filter the previous classes
             let profDif = Number(d3.select('#prof-diff-text').property('value'));
-            console.log(profDif)
             classes = classes.filter(class_ => class_['Difficulty'] != "" && (Number(class_['Difficulty']) <= profDif));
+            console.log(classes)
+        }
+
+        if (classDifChecked) {
+            // filter the previous classes
+            let classDif = Number(d3.select('#class-diff-text').property('value'));
+            classes = classes.filter(class_ => class_['CU_Reviews_Difficulty'] != "" && (Number(class_['CU_Reviews_Difficulty']) <= classDif));
+            console.log(classes)
+        }
+
+        if (classRatingChecked) {
+            let classRate = Number(d3.select('#class-rat-text').property('value'));
+            classes = classes.filter(class_ => class_['CU_Reviews_Rating'] != "" && (Number(class_['CU_Reviews_Rating']) >= classRate));
+            console.log(classes)
+        }
+
+        if (classWorloadChecked) {
+            let classWork = Number(d3.select('#class-work-text').property('value'));
+            classes = classes.filter(class_ => class_['CU_Reviews_Workload'] != "" && (Number(class_['CU_Reviews_Workload']) <= classWork));
+            console.log(classes)
+        }
+
+        if (startTimeChecked) {
+            let startTime = d3.select('#start-time-text').property('value');
+            classes = classes.filter(class_ => class_['Start_Time'].includes(startTime));
+            console.log(classes)
+        }
+
+        if (endTimeChecked) {
+            let endTime = d3.select('#end-time-text').property('value');
+            classes = classes.filter(class_ => class_['End_Time'].includes(endTime));
             console.log(classes)
         }
 
@@ -360,14 +394,6 @@ export default class HomePage extends Component {
                         <input type="checkbox" name="check-11" value="check-11" id="check-11" />
                         <label for="check-11">End Time</label>
                         <input id='end-time-text' type="text"></input>
-                        <br></br>
-                        <br></br>
-                    </div>
-
-                    <div>
-                        <input type="checkbox" name="check-11" value="check-11" id="check-11" />
-                        <label for="check-11">Location</label>
-                        <input id='location-text' type="text"></input>
                         <br></br>
                         <br></br>
                     </div>
