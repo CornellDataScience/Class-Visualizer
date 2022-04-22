@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
 import * as d3 from 'd3';
 import fullDataFile from './data/FullerData_CUReviews.csv';
+import { BasicSlider } from './BasicSlider.jsx';
 
 export default class HomePage extends Component {
 
@@ -128,119 +129,117 @@ export default class HomePage extends Component {
 
     updateSearch() {
         console.log('UPDATING');
-        let departmentChecked = d3.select('#check-1').property('checked');
 
-        let aplusChecked = d3.select('#check-med-1').property('checked');
-        let aChecked = d3.select('#check-med-2').property('checked');
-        let aminusChecked = d3.select('#check-med-3').property('checked');
-        let bplusChecked = d3.select('#check-med-4').property('checked');
-        let bChecked = d3.select('#check-med-5').property('checked');
-        let bminusChecked = d3.select('#check-med-6').property('checked');
+        // let aplusChecked = d3.select('#check-med-1').property('checked');
+        // let aChecked = d3.select('#check-med-2').property('checked');
+        // let aminusChecked = d3.select('#check-med-3').property('checked');
+        // let bplusChecked = d3.select('#check-med-4').property('checked');
+        // let bChecked = d3.select('#check-med-5').property('checked');
+        // let bminusChecked = d3.select('#check-med-6').property('checked');
         let medgrades = [];
-        if (aplusChecked) {
-            medgrades.push("A+")
-        }
-        if (aChecked) {
-            medgrades.push("A")
-        }
-        if (aminusChecked) {
-            medgrades.push("A-")
-        }
-        if (bplusChecked) {
-            medgrades.push("B+")
-        }
-        if (bChecked) {
-            medgrades.push("B")
-        }
-        if (bminusChecked) {
-            medgrades.push("B-")
-        }
+        // if (aplusChecked) {
+        //     medgrades.push("A+")
+        // }
+        // if (aChecked) {
+        //     medgrades.push("A")
+        // }
+        // if (aminusChecked) {
+        //     medgrades.push("A-")
+        // }
+        // if (bplusChecked) {
+        //     medgrades.push("B+")
+        // }
+        // if (bChecked) {
+        //     medgrades.push("B")
+        // }
+        // if (bminusChecked) {
+        //     medgrades.push("B-")
+        // }
 
-        let profChecked = d3.select('#check-2').property('checked');
-        let courseNumChecked = d3.select('#check-4').property('checked');
-        let courseNameChecked = d3.select('#check-5').property('checked');
-        let profDifChecked = d3.select('#check-6').property('checked');
-        let classDifChecked = d3.select('#check-7').property('checked')
-        let classRatingChecked = d3.select('#check-8').property('checked')
-        let classWorloadChecked = d3.select('#check-9').property('checked')
-        let startTimeChecked = d3.select('#check-10').property('checked')
-        let endTimeChecked = d3.select('#check-11').property('checked')
+        // let courseNameChecked = d3.select('#check-5').property('checked');
+        // let profDifChecked = d3.select('#check-6').property('checked');
+        // let classDifChecked = d3.select('#check-7').property('checked')
+        // let classRatingChecked = d3.select('#check-8').property('checked')
+        // let classWorloadChecked = d3.select('#check-9').property('checked')
+        // let startTimeChecked = d3.select('#check-10').property('checked')
+        // let endTimeChecked = d3.select('#check-11').property('checked')
 
         //let medGradeChecked = d3.select('#check-3').property('checked');
 
         let classes = this.state.fullData;
 
         console.log('before dep')
-        if (departmentChecked) {
-            let department = d3.select('#department-text').property('value');
-            console.log(department);
+        let department = d3.select('#department-text').property('value');
+        console.log(department);
+        if (department !== '') {
             classes = classes.filter(class_ => class_['Dept'] === department);
             console.log(classes);
         }
         console.log('before prof')
-        if (profChecked) {
+        let prof = d3.select('#prof-text').property('value');
+        console.log('PROF', prof);
+        if (prof !== '') {
             // filter the previous classes
-            let prof = d3.select('#prof-text').property('value');
-            console.log('PROF', prof)
             classes = classes.filter(class_ => class_['Professor'].toLowerCase().includes(prof.toLowerCase()));
             console.log(classes)
         }
 
-        if (courseNumChecked) {
+        let courseNum = Number(d3.select('#course-num-text').property('value'));
+        console.log(courseNum)
+        if (courseNum !== 0) {
             // filter the previous classes
-            let courseNum = Number(d3.select('#course-num-text').property('value'));
-            console.log(courseNum)
-            classes = classes.filter(class_ => Number(class_['Number']) == courseNum);
+            classes = classes.filter(class_ => Number(class_['Number']) === courseNum);
             console.log(classes)
         }
 
-        if (courseNameChecked) {
+        let courseName = d3.select('#course-name-text').property('value');
+        if (courseName !== '') {
             // filter the previous classes
-            let course_name = d3.select('#course-name-text').property('value');
-            classes = classes.filter(class_ => class_['Course_Name'].toLowerCase().includes(course_name.toLowerCase()));
-            console.log(classes)
+            classes = classes.filter(class_ => class_['Course_Name'].toLowerCase().includes(courseName.toLowerCase()));
+            console.log('COURSE NAME FILTER')
+            console.log(classes);
         }
 
-        if (profDifChecked) {
+        let profDif = Number(d3.select('#prof-diff-text').property('value'));
+        if (profDif !== 0) {
             // filter the previous classes
-            let profDif = Number(d3.select('#prof-diff-text').property('value'));
-            classes = classes.filter(class_ => class_['Difficulty'] != "" && (Number(class_['Difficulty']) <= profDif));
+            classes = classes.filter(class_ => class_['Difficulty'] !== "" && (Number(class_['Difficulty']) <= profDif));
             console.log(classes)
         }
 
-        if (classDifChecked) {
+        let classDif = Number(d3.select('#class-diff-text').property('value'));
+        if (classDif !== 0) {
             // filter the previous classes
-            let classDif = Number(d3.select('#class-diff-text').property('value'));
-            classes = classes.filter(class_ => class_['CU_Reviews_Difficulty'] != "" && (Number(class_['CU_Reviews_Difficulty']) <= classDif));
+            classes = classes.filter(class_ => class_['CU_Reviews_Difficulty'] !== "" && (Number(class_['CU_Reviews_Difficulty']) <= classDif));
             console.log(classes)
         }
 
-        if (classRatingChecked) {
-            let classRate = Number(d3.select('#class-rat-text').property('value'));
-            classes = classes.filter(class_ => class_['CU_Reviews_Rating'] != "" && (Number(class_['CU_Reviews_Rating']) >= classRate));
+        let classRate = Number(d3.select('#class-rat-text').property('value'));
+        if (classRate !== 0) {
+            classes = classes.filter(class_ => class_['CU_Reviews_Rating'] !== "" && (Number(class_['CU_Reviews_Rating']) >= classRate));
             console.log(classes)
         }
 
-        if (classWorloadChecked) {
-            let classWork = Number(d3.select('#class-work-text').property('value'));
-            classes = classes.filter(class_ => class_['CU_Reviews_Workload'] != "" && (Number(class_['CU_Reviews_Workload']) <= classWork));
+        let classWork = Number(d3.select('#class-work-text').property('value'));
+        if (classWork !== 0) {
+            classes = classes.filter(class_ => class_['CU_Reviews_Workload'] !== "" && (Number(class_['CU_Reviews_Workload']) <= classWork));
             console.log(classes)
         }
 
-        if (startTimeChecked) {
-            let startTime = d3.select('#start-time-text').property('value');
+        let startTime = d3.select('#start-time-text').property('value');
+        if (startTime !== '') {
             classes = classes.filter(class_ => class_['Start_Time'].includes(startTime));
             console.log(classes)
         }
 
-        if (endTimeChecked) {
-            let endTime = d3.select('#end-time-text').property('value');
+        let endTime = d3.select('#end-time-text').property('value');
+        if (endTime !== '') {
             classes = classes.filter(class_ => class_['End_Time'].includes(endTime));
             console.log(classes)
         }
 
 
-        if (medgrades.length != 0) {
+        if (medgrades.length !== 0) {
             classes = classes.filter(class_ => medgrades.includes(class_['Median Grade']));
         }
 
@@ -258,6 +257,9 @@ export default class HomePage extends Component {
 
         this.createViz();
 
+        d3.selectAll('.text-input').on('change', this.plotClassInfo)
+
+
         console.log('FULL DATA');
         console.log(this.state.fullData);
 
@@ -266,6 +268,7 @@ export default class HomePage extends Component {
 
     render() {
         let list;
+
         if (this.state.showPlot) {
             list = <ul id='class-info'>Class Info</ul>;
         } else {
@@ -276,6 +279,10 @@ export default class HomePage extends Component {
 
                 <h1>Class Visualizer</h1>
 
+                <BasicSlider minimum={1} maximum={5} time={false}></BasicSlider>
+
+                <BasicSlider minimum={1} maximum={5} time={true}></BasicSlider>
+
                 <div>
                     <br />
                     <b>Filter By</b>
@@ -283,7 +290,7 @@ export default class HomePage extends Component {
                     <div class="row">
                         <div class="col">
                             <div>
-                                <input type="checkbox" name="check-1" value="check-1" id="check-1" />
+                                {/* <input type="checkbox" name="check-1" value="check-1" id="check-1" /> */}
                                 <label for="check-1">Department</label>
                                 <input class="text-input" id='department-text' type="text" placeholder="Enter Department..."></input>
 
@@ -293,7 +300,7 @@ export default class HomePage extends Component {
 
                         <div class="col">
                             <div>
-                                <input type="checkbox" name="check-2" value="check-2" id="check-2" />
+                                {/* <input type="checkbox" name="check-2" value="check-2" id="check-2" /> */}
                                 <label for="check-2">Professor</label>
                                 <input class="text-input" id='prof-text' type="text" placeholder="Enter Prof Name..."></input>
                                 <br></br>
@@ -302,7 +309,7 @@ export default class HomePage extends Component {
 
                         <div class="col">
                             <div>
-                                <input type="checkbox" name="check-4" value="check-4" id="check-4" />
+                                {/* <input type="checkbox" name="check-4" value="check-4" id="check-4" /> */}
                                 <label for="check-4">Course Number</label>
                                 <input class="text-input" id='course-num-text' type="text" placeholder="ex: 1110"></input>
                                 <br></br>
@@ -354,7 +361,7 @@ export default class HomePage extends Component {
                     <div class="row">
                         <div class="col">
                             <div>
-                                <input type="checkbox" name="check-5" value="check-5" id="check-5" />
+                                {/* <input type="checkbox" name="check-5" value="check-5" id="check-5" /> */}
                                 <label for="check-5">Course Name</label>
                                 <input class="text-input" id='course-name-text' type="text" placeholder="Enter course name..."></input>
                                 <br></br>
@@ -362,7 +369,7 @@ export default class HomePage extends Component {
                         </div>
                         <div class="col">
                             <div>
-                                <input type="checkbox" name="check-6" value="check-6" id="check-6" />
+                                {/* <input type="checkbox" name="check-6" value="check-6" id="check-6" /> */}
                                 <label for="check-6">Professor Difficulty</label>
                                 <input class="text-input" id='prof-diff-text' type="text" placeholder="From RateMyProf, 0...5"></input>
                                 <br></br>
@@ -371,7 +378,7 @@ export default class HomePage extends Component {
 
                         <div class="col">
                             <div>
-                                <input type="checkbox" name="check-7" value="check-7" id="check-7" />
+                                {/* <input type="checkbox" name="check-7" value="check-7" id="check-7" /> */}
                                 <label for="check-7">Class Difficulty</label>
                                 <input class="text-input" id='class-diff-text' type="text" placeholder="From CUReviews, 0...5"></input>
                                 <br></br>
@@ -382,7 +389,7 @@ export default class HomePage extends Component {
                     <div class="row">
                         <div class="col">
                             <div>
-                                <input type="checkbox" name="check-8" value="check-8" id="check-8" />
+                                {/* <input type="checkbox" name="check-8" value="check-8" id="check-8" /> */}
                                 <label for="check-8">Class Rating</label>
                                 <input class="text-input" id='class-rat-text' type="text" placeholder="From CUReviews, 0...5"></input>
                                 <br></br>
@@ -391,7 +398,7 @@ export default class HomePage extends Component {
 
                         <div class="col">
                             <div>
-                                <input type="checkbox" name="check-9" value="check-9" id="check-9" />
+                                {/* <input type="checkbox" name="check-9" value="check-9" id="check-9" /> */}
                                 <label for="check-9">Class Workload</label>
                                 <input class="text-input" id='class-work-text' type="text" placeholder="From CUReviews, 0...5"></input>
                                 <br></br>
@@ -400,7 +407,7 @@ export default class HomePage extends Component {
 
                         <div class="col">
                             <div>
-                                <input type="checkbox" name="check-10" value="check-10" id="check-10" />
+                                {/* <input type="checkbox" name="check-10" value="check-10" id="check-10" /> */}
                                 <label for="check-10">Start Time</label>
                                 <input class="text-input" id='start-time-text' type="text" placeholder="Enter start time..."></input>
                                 <br></br>
@@ -409,7 +416,7 @@ export default class HomePage extends Component {
 
                         <div class="col">
                             <div>
-                                <input type="checkbox" name="check-11" value="check-11" id="check-11" />
+                                {/* <input type="checkbox" name="check-11" value="check-11" id="check-11" /> */}
                                 <label for="check-11">End Time</label>
                                 <input class="text-input" id='end-time-text' type="text" placeholder="Enter end time..."></input>
                                 <br></br>
@@ -424,7 +431,6 @@ export default class HomePage extends Component {
                 <div id="selected-class-info"></div>
                 <div style={{ align: "center" }}>
                     <br></br>
-                    <Button variant="primary" onClick={this.plotClassInfo}>Update Table</Button>{' '}
 
                     <br></br>
                     <br></br>
@@ -445,7 +451,7 @@ export default class HomePage extends Component {
 
 
 
-            </div>
+            </div >
         )
     }
 }
