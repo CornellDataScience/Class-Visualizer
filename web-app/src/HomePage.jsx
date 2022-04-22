@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
 import * as d3 from 'd3';
-import fullDataFile from './data/FullerData_CUReviews.csv';
+import fullDataFileSP from './data/FullerData_CUReviews.csv';
+import fullDataFile from './data/FullerData_CUReviews_FA22.csv';
 import { BasicSlider } from './BasicSlider.jsx';
 
 export default class HomePage extends Component {
@@ -172,7 +173,7 @@ export default class HomePage extends Component {
         let department = d3.select('#department-text').property('value');
         console.log(department);
         if (department !== '') {
-            classes = classes.filter(class_ => class_['Dept'] === department);
+            classes = classes.filter(class_ => class_['Dept'].toLowerCase().includes(department.toLowerCase()));
             console.log(classes);
         }
         console.log('before prof')
@@ -279,9 +280,7 @@ export default class HomePage extends Component {
 
                 <h1>Class Visualizer</h1>
 
-                <BasicSlider minimum={1} maximum={5} time={false}></BasicSlider>
 
-                <BasicSlider minimum={1} maximum={5} time={true}></BasicSlider>
 
                 <div>
                     <br />
@@ -372,6 +371,8 @@ export default class HomePage extends Component {
                                 {/* <input type="checkbox" name="check-6" value="check-6" id="check-6" /> */}
                                 <label for="check-6">Professor Difficulty</label>
                                 <input class="text-input" id='prof-diff-text' type="text" placeholder="From RateMyProf, 0...5"></input>
+                                <BasicSlider minimum={1} maximum={5} time={false}></BasicSlider>
+
                                 <br></br>
                             </div>
                         </div>
@@ -381,6 +382,8 @@ export default class HomePage extends Component {
                                 {/* <input type="checkbox" name="check-7" value="check-7" id="check-7" /> */}
                                 <label for="check-7">Class Difficulty</label>
                                 <input class="text-input" id='class-diff-text' type="text" placeholder="From CUReviews, 0...5"></input>
+                                <BasicSlider minimum={1} maximum={5} time={false}></BasicSlider>
+
                                 <br></br>
                             </div>
                         </div>
@@ -410,13 +413,15 @@ export default class HomePage extends Component {
                                 {/* <input type="checkbox" name="check-10" value="check-10" id="check-10" /> */}
                                 <label for="check-10">Start Time</label>
                                 <input class="text-input" id='start-time-text' type="text" placeholder="Enter start time..."></input>
+                                <BasicSlider minimum={1} maximum={5} time={true}></BasicSlider>
+
                                 <br></br>
                             </div>
                         </div>
 
                         <div class="col">
                             <div>
-                                {/* <input type="checkbox" name="check-11" value="check-11" id="check-11" /> */}
+                                <input type="checkbox" name="check-11" value="check-11" id="check-11" />
                                 <label for="check-11">End Time</label>
                                 <input class="text-input" id='end-time-text' type="text" placeholder="Enter end time..."></input>
                                 <br></br>
