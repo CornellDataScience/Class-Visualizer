@@ -1,5 +1,6 @@
 import { Slider, Handles } from 'react-compound-slider'
 import { Handle } from './Handler.jsx'
+import { useState, useEffect } from 'react';
 
 export const BasicSlider = (props) => {
 
@@ -20,6 +21,25 @@ export const BasicSlider = (props) => {
     backgroundColor: '#8B9CB6',
   }
 
+  
+  const [value, setValue] = useState(0);
+  const [value2, setValue2] = useState(0);
+
+  useEffect(() => {
+    props.updateVal1(value)
+
+    console.log('VALUE CHANGED')
+    console.log(value)
+  }, [value]);
+
+  useEffect(() => {
+    props.updateVal2(value2)
+
+    console.log('VALUE CHANGED')
+    console.log(value2)
+  }, [value2]);
+  
+
   return (
     <div>
       <Slider
@@ -33,14 +53,33 @@ export const BasicSlider = (props) => {
         <Handles>
           {({ handles, getHandleProps }) => (
             <div className="slider-handles">
-              {handles.map(handle => (
+                
+                <Handle
+                  key={handles[0].id}
+                  handle={handles[0]}
+                  time={props.time}
+                  getHandleProps={getHandleProps}
+                  updateVal={setValue}
+                />
+
+                <Handle
+                  key={handles[1].id}
+                  handle={handles[1]}
+                  time={props.time}
+                  getHandleProps={getHandleProps}
+                  updateVal={setValue2}
+                />
+
+              {/* {handles.map(handle => (
+                
                 <Handle
                   key={handle.id}
                   handle={handle}
                   time={props.time}
                   getHandleProps={getHandleProps}
+                  updateVal={setValue}
                 />
-              ))}
+              ))} */}
             </div>
           )}
         </Handles>

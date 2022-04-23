@@ -1,7 +1,8 @@
 export function Handle({
   handle: { id, value, percent },
   time,
-  getHandleProps
+  getHandleProps,
+  updateVal
 }) {
   let timeDict = {
     1: '9:05',
@@ -12,6 +13,7 @@ export function Handle({
   };
 
   console.log('Time', time)
+  updateVal(value)
 
   return (
     <div

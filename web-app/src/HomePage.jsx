@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import Button from 'react-bootstrap/Button';
 import * as d3 from 'd3';
 import fullDataFileSP from './data/FullerData_CUReviews.csv';
 import fullDataFile from './data/FullerData_CUReviews_FA22.csv';
 import { BasicSlider } from './BasicSlider.jsx';
+import { Button, ButtonGroup, ButtonToolbar, InputGroup, FormControl } from 'react-bootstrap';
 
 export default class HomePage extends Component {
 
@@ -11,13 +11,25 @@ export default class HomePage extends Component {
         super();
         this.state = {
             fullData: [],
-            selectedClasses: []
+            selectedClasses: [],
+            sliderVal1: 0,
+            sliderVal2: 0,
         };
 
         this.createViz = this.createViz.bind(this);
         this.changeClass = this.changeClass.bind(this);
         this.updateSearch = this.updateSearch.bind(this);
         this.plotClassInfo = this.plotClassInfo.bind(this);
+        this.setSliderVal1 = this.setSliderVal1.bind(this);
+        this.setSliderVal2 = this.setSliderVal2.bind(this);
+    }
+
+    setSliderVal1(newVal) {
+        this.setState({'sliderVal1': newVal})
+    }
+
+    setSliderVal2(newVal) {
+        this.setState({'sliderVal2': newVal})
     }
 
     async createViz() {
@@ -130,6 +142,10 @@ export default class HomePage extends Component {
 
     updateSearch() {
         console.log('UPDATING');
+        console.log('P');
+        // let p = d3.select('#sem').on("change", change);
+        
+        // console.log(p)
 
         // let aplusChecked = d3.select('#check-med-1').property('checked');
         // let aChecked = d3.select('#check-med-2').property('checked');
@@ -176,9 +192,7 @@ export default class HomePage extends Component {
             classes = classes.filter(class_ => class_['Dept'].toLowerCase().includes(department.toLowerCase()));
             console.log(classes);
         }
-        console.log('before prof')
         let prof = d3.select('#prof-text').property('value');
-        console.log('PROF', prof);
         if (prof !== '') {
             // filter the previous classes
             classes = classes.filter(class_ => class_['Professor'].toLowerCase().includes(prof.toLowerCase()));
@@ -186,7 +200,6 @@ export default class HomePage extends Component {
         }
 
         let courseNum = Number(d3.select('#course-num-text').property('value'));
-        console.log(courseNum)
         if (courseNum !== 0) {
             // filter the previous classes
             classes = classes.filter(class_ => Number(class_['Number']) === courseNum);
@@ -202,9 +215,15 @@ export default class HomePage extends Component {
         }
 
         let profDif = Number(d3.select('#prof-diff-text').property('value'));
-        if (profDif !== 0) {
+        let profDifSlider = d3.select('#prof-diff-slider')//.attr('minimum')//.handle.value;
+        console.log('Slide');
+        console.log(profDifSlider);
+        let val1 = this.state.sliderVal1;
+        let val2 = this.state.sliderVal2;
+        if (val1 !== 1 && val2 !== 5) {
             // filter the previous classes
-            classes = classes.filter(class_ => class_['Difficulty'] !== "" && (Number(class_['Difficulty']) <= profDif));
+
+            classes = classes.filter(class_ => class_['Difficulty'] !== "" && (Number(class_['Difficulty']) <= val2 && Number(class_['Difficulty']) >= val1));
             console.log(classes)
         }
 
@@ -266,9 +285,17 @@ export default class HomePage extends Component {
 
     }
 
+    componentDidUpdate() {
+        this.plotClassInfo()
+    }
+
 
     render() {
         let list;
+
+        console.log('SLIDER VAL')
+        console.log(this.state.sliderVal1)
+        console.log(this.state.sliderVal2)
 
         if (this.state.showPlot) {
             list = <ul id='class-info'>Class Info</ul>;
@@ -279,8 +306,6 @@ export default class HomePage extends Component {
             <div className="Home-Page App">
 
                 <h1>Class Visualizer</h1>
-
-
 
                 <div>
                     <br />
@@ -320,9 +345,18 @@ export default class HomePage extends Component {
                     </div>
 
                     <div>
-                        <label class="med-grade-text">Median Grade</label>
-                        {/* <input id='med-grade-text' type="text"></input> */}
-                        <br></br>
+                        <ButtonToolbar className="justify-content-center" aria-label="Toolbar with Button groups">
+                            <label class="med-grade-text">Median Grade</label>
+                            <ButtonGroup aria-label="First group">
+                                <Button variant="secondary">A+</Button>{' '}
+                                <Button variant="secondary">A</Button>{' '}
+                                <Button variant="secondary">A-</Button>{' '}
+                                <Button variant="secondary">B+</Button>{' '}
+                                <Button variant="secondary">B</Button>{' '}
+                                <Button variant="secondary">B-</Button>
+                            </ButtonGroup>
+                        </ButtonToolbar>
+
                         <div class="row">
                             <div class="col">
                                 <input type="checkbox" id="check-med-1" value="check-med-1" class="check-med" />
@@ -371,7 +405,7 @@ export default class HomePage extends Component {
                                 {/* <input type="checkbox" name="check-6" value="check-6" id="check-6" /> */}
                                 <label for="check-6">Professor Difficulty</label>
                                 <input class="text-input" id='prof-diff-text' type="text" placeholder="From RateMyProf, 0...5"></input>
-                                <BasicSlider minimum={1} maximum={5} time={false}></BasicSlider>
+                                <BasicSlider id = "prof-diff-slider" updateVal1={this.setSliderVal1} updateVal2={this.setSliderVal2} minimum={1} maximum={5} time={false} ></BasicSlider>
 
                                 <br></br>
                             </div>
@@ -382,7 +416,7 @@ export default class HomePage extends Component {
                                 {/* <input type="checkbox" name="check-7" value="check-7" id="check-7" /> */}
                                 <label for="check-7">Class Difficulty</label>
                                 <input class="text-input" id='class-diff-text' type="text" placeholder="From CUReviews, 0...5"></input>
-                                <BasicSlider minimum={1} maximum={5} time={false}></BasicSlider>
+                                {/* <BasicSlider minimum={1} maximum={5} time={false}></BasicSlider> */}
 
                                 <br></br>
                             </div>
@@ -413,7 +447,7 @@ export default class HomePage extends Component {
                                 {/* <input type="checkbox" name="check-10" value="check-10" id="check-10" /> */}
                                 <label for="check-10">Start Time</label>
                                 <input class="text-input" id='start-time-text' type="text" placeholder="Enter start time..."></input>
-                                <BasicSlider minimum={1} maximum={5} time={true}></BasicSlider>
+                                {/* <BasicSlider minimum={1} maximum={5} time={true}></BasicSlider> */}
 
                                 <br></br>
                             </div>
@@ -427,6 +461,16 @@ export default class HomePage extends Component {
                                 <br></br>
                             </div>
                         </div>
+                    <div>
+                    <form action="#">
+                        <label for="sem">Semester</label>
+                        <select name="sems" id="sem">
+                            <option value="FA22">FA '22</option>
+                            <option value="SP22">SP '22</option>
+                        </select>
+                        {/* <input type="submit" value="Submit" /> */}
+                    </form>
+                    </div>
                     </div>
                     <br></br>
                 </div>
