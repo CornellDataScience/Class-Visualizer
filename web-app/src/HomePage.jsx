@@ -22,6 +22,7 @@ export default class HomePage extends Component {
         this.plotClassInfo = this.plotClassInfo.bind(this);
         this.setSliderVal1 = this.setSliderVal1.bind(this);
         this.setSliderVal2 = this.setSliderVal2.bind(this);
+        this.updateSemester = this.updateSemester(this)
     }
 
     setSliderVal1(newVal) {
@@ -140,12 +141,25 @@ export default class HomePage extends Component {
         div.append('p').text(avgRating);
     }
 
-    updateSearch() {
+    async updateSemester() {
         console.log('UPDATING');
         console.log('P');
-        // let p = d3.select('#sem').on("change", change);
+        let p = d3.select('#sem').node().value;
+        console.log(p)
+        if (p==="FA22") {
+            let data = await d3.csv(fullDataFile);
+            this.setState({ fullData: data });
+        } else if (p==="SP22") {
+            let data = await d3.csv(fullDataFileSP);
+            this.setState({ fullData: data });
+        }
         
-        // console.log(p)
+    }
+    
+    
+    
+    updateSearch() {
+        
 
         // let aplusChecked = d3.select('#check-med-1').property('checked');
         // let aChecked = d3.select('#check-med-2').property('checked');
@@ -278,7 +292,7 @@ export default class HomePage extends Component {
         this.createViz();
 
         d3.selectAll('.text-input').on('change', this.plotClassInfo)
-
+        d3.select('#sem').on('change', this.updateSemester)
 
         console.log('FULL DATA');
         console.log(this.state.fullData);
