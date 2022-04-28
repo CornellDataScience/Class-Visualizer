@@ -11,11 +11,15 @@ export default class HomePage extends Component {
         super();
         this.state = {
             fullData: [],
-            selectedClasses: [],
+            selectedClasses: ['Dept + Number', 'Course_Name', 'Professor_x'],
             sliderVal1: 0,
-            sliderVal2: 0
-            // sliderVal3: 0,
-            // sliderVal4: 0,
+            sliderVal2: 0,
+            sliderVal3: 0,
+            sliderVal4: 0,
+            sliderVal5: 0,
+            sliderVal6: 0,
+            sliderVal7: 0,
+            sliderVal8: 0,
         };
 
         this.createViz = this.createViz.bind(this);
@@ -25,8 +29,14 @@ export default class HomePage extends Component {
         this.setSliderVal1 = this.setSliderVal1.bind(this);
         this.setSliderVal2 = this.setSliderVal2.bind(this);
 
-        // this.setSliderVal3 = this.setSliderVal3.bind(this)
-        // this.setSliderVal4 = this.setSliderVal4.bind(this)
+        this.setSliderVal3 = this.setSliderVal3.bind(this)
+        this.setSliderVal4 = this.setSliderVal4.bind(this)
+        this.setSliderVal5 = this.setSliderVal5.bind(this)
+        this.setSliderVal6 = this.setSliderVal6.bind(this)
+        this.setSliderVal7 = this.setSliderVal7.bind(this)
+        this.setSliderVal8 = this.setSliderVal8.bind(this)
+
+
 
 
         this.updateSemester = this.updateSemester(this)
@@ -40,13 +50,27 @@ export default class HomePage extends Component {
         this.setState({ 'sliderVal2': newVal })
     }
 
-    // setSliderVal3(newVal) {
-    //     this.setState({ 'sliderVal3': newVal })
-    // }
+    setSliderVal3(newVal) {
+        this.setState({ 'sliderVal3': newVal })
+    }
 
-    // setSliderVal4(newVal) {
-    //     this.setState({ 'sliderVal4': newVal })
-    // }
+    setSliderVal4(newVal) {
+        this.setState({ 'sliderVal4': newVal })
+    }
+    setSliderVal5(newVal) {
+        this.setState({ 'sliderVal5': newVal })
+    }
+
+    setSliderVal6(newVal) {
+        this.setState({ 'sliderVal6': newVal })
+    }
+    setSliderVal7(newVal) {
+        this.setState({ 'sliderVal7': newVal })
+    }
+
+    setSliderVal8(newVal) {
+        this.setState({ 'sliderVal8': newVal })
+    }
 
     async createViz() {
         let div = d3.select('#viz');
@@ -111,14 +135,15 @@ export default class HomePage extends Component {
 
         let tableRowEntries = tableRows.selectAll('td')
             .data((d) => {
-                return [d['Dept + Number'], d['Course_Name'], d['Professor']]
+                return [d['Dept + Number'], d['Course_Name'], d['Professor_x'], d['Median Grade']]
+                // return [d[this.state.selectedClasses]]
             })
             .join('td')
             .text(d => d)
         //tableHeader.append("th").text('Additional Info');
         console.log(tableHeader);
         d3.select('#class-info-header-row').selectAll('th')
-            .data(['Course #', 'Class', 'Professor', 'Additional Info'])
+            .data(['Course', 'Name', 'Professor', 'Median'])
             .join("th")
             .text(d => d) //'Additional Info');
         tableRows.selectAll('td.table-button')
@@ -253,32 +278,45 @@ export default class HomePage extends Component {
         if (!(val1 == 1 && val2 == 5)) {
             // filter the previous classes
             console.log(val1)
+            // this.setState({ selectedClasses: this.state.selectedClasses.concat(['Difficulty']) })
             classes = classes.filter(class_ => class_['Difficulty'] !== "" && (Number(class_['Difficulty']) <= val2 && Number(class_['Difficulty']) >= val1));
             console.log(classes)
         }
         console.log(val2)
-        let classDif = Number(d3.select('#class-diff-text').property('value'));
-        // let classDifSlider = d3.select('#class-diff-slider')
-        // let val3 = this.state.sliderVal3;
-        // let val4 = this.state.sliderVal4;
-        if (classDif !== 0) {
-            // if (val3 !== 1 && val4 !== 5) {
+        // let classDif = Number(d3.select('#class-diff-text').property('value'));
+        let classDifSlider = d3.select('#class-diff-slider')
+        let val3 = this.state.sliderVal3;
+        let val4 = this.state.sliderVal4;
+        // if (classDif !== 0) {
+        if (!(val3 == 1 && val4 == 5)) {
             // filter the previous classes
-            classes = classes.filter(class_ => class_['CU_Reviews_Difficulty'] !== "" && (Number(class_['CU_Reviews_Difficulty']) <= classDif));
+            // classes = classes.filter(class_ => class_['CU_Reviews_Difficulty'] !== "" && (Number(class_['CU_Reviews_Difficulty']) <= classDif));
 
-            // classes = classes.filter(class_ => class_['CU_Reviews_Difficulty'] !== "" && (Number(class_['CU_Reviews_Difficulty']) <= val4 && Number(class_['CU_Reviews_Difficulty']) >= val3));
+            classes = classes.filter(class_ => class_['CU_Reviews_Difficulty'] !== "" && (Number(class_['CU_Reviews_Difficulty']) <= val4 && Number(class_['CU_Reviews_Difficulty']) >= val3));
             console.log(classes)
         }
 
-        let classRate = Number(d3.select('#class-rat-text').property('value'));
-        if (classRate !== 0) {
-            classes = classes.filter(class_ => class_['CU_Reviews_Rating'] !== "" && (Number(class_['CU_Reviews_Rating']) >= classRate));
+        // let classRate = Number(d3.select('#class-rat-text').property('value'));
+        let classRate = d3.select('#class-rat-slider')
+        let val5 = this.state.sliderVal5;
+        let val6 = this.state.sliderVal6;
+        // if (classRate !== 0) {
+        if (!(val5 == 1 && val6 == 5)) {
+            // classes = classes.filter(class_ => class_['CU_Reviews_Rating'] !== "" && (Number(class_['CU_Reviews_Rating']) >= classRate));
+            classes = classes.filter(class_ => class_['CU_Reviews_Rating'] !== "" && (Number(class_['CU_Reviews_Rating']) >= val5 && (Number(class_['CU_Reviews_Rating']) <= val6)));
+
             console.log(classes)
         }
 
-        let classWork = Number(d3.select('#class-work-text').property('value'));
-        if (classWork !== 0) {
-            classes = classes.filter(class_ => class_['CU_Reviews_Workload'] !== "" && (Number(class_['CU_Reviews_Workload']) <= classWork));
+        // let classWork = Number(d3.select('#class-work-text').property('value'));
+        let classWork = d3.select('#class-work-slider')
+        let val7 = this.state.sliderVal7;
+        let val8 = this.state.sliderVal8;
+        // if (classWork !== 0) {
+        if (!(val7 == 1 && val8 == 5)) {
+            // classes = classes.filter(class_ => class_['CU_Reviews_Workload'] !== "" && (Number(class_['CU_Reviews_Workload']) <= classWork));
+            classes = classes.filter(class_ => class_['CU_Reviews_Workload'] !== "" && (Number(class_['CU_Reviews_Workload']) <= val8 && (Number(class_['CU_Reviews_Workload']) >= val7)));
+
             console.log(classes)
         }
 
@@ -453,8 +491,8 @@ export default class HomePage extends Component {
                             <div>
                                 {/* <input type="checkbox" name="check-7" value="check-7" id="check-7" /> */}
                                 <label for="check-7">Class Difficulty</label>
-                                <input class="text-input" id='class-diff-text' type="text" placeholder="From CUReviews, 0...5"></input>
-                                {/* <BasicSlider id="class-diff-slider" updateVal1={this.setSliderVal3} updateVal2={this.setSliderVal4} minimum={1} maximum={5} time={false} ></BasicSlider> */}
+                                {/* <input class="text-input" id='class-diff-text' type="text" placeholder="From CUReviews, 0...5"></input> */}
+                                <BasicSlider id="class-diff-slider" updateVal1={this.setSliderVal3} updateVal2={this.setSliderVal4} minimum={1} maximum={5} time={false} ></BasicSlider>
 
                                 <br></br>
                             </div>
@@ -466,7 +504,9 @@ export default class HomePage extends Component {
                             <div>
                                 {/* <input type="checkbox" name="check-8" value="check-8" id="check-8" /> */}
                                 <label for="check-8">Class Rating</label>
-                                <input class="text-input" id='class-rat-text' type="text" placeholder="From CUReviews, 0...5"></input>
+                                {/* <input class="text-input" id='class-rat-text' type="text" placeholder="From CUReviews, 0...5"></input> */}
+                                <BasicSlider id="class-rat-slider" updateVal1={this.setSliderVal5} updateVal2={this.setSliderVal6} minimum={1} maximum={5} time={false} ></BasicSlider>
+
                                 <br></br>
                             </div>
                         </div>
@@ -475,7 +515,9 @@ export default class HomePage extends Component {
                             <div>
                                 {/* <input type="checkbox" name="check-9" value="check-9" id="check-9" /> */}
                                 <label for="check-9">Class Workload</label>
-                                <input class="text-input" id='class-work-text' type="text" placeholder="From CUReviews, 0...5"></input>
+                                {/* <input class="text-input" id='class-work-text' type="text" placeholder="From CUReviews, 0...5"></input> */}
+                                <BasicSlider id="class-work-slider" updateVal1={this.setSliderVal7} updateVal2={this.setSliderVal8} minimum={1} maximum={5} time={false} ></BasicSlider>
+
                                 <br></br>
                             </div>
                         </div>

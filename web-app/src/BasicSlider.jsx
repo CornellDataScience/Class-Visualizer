@@ -6,7 +6,7 @@ export const BasicSlider = (props) => {
 
   const sliderStyle = {  // Give the slider some width
     position: 'relative',
-    width: '10%',
+    width: '30%',
     height: 80,
     //border: '1px solid steelblue',
     left: '400px'
@@ -21,7 +21,7 @@ export const BasicSlider = (props) => {
     backgroundColor: '#8B9CB6',
   }
 
-  
+
   const [value, setValue] = useState(0);
   const [value2, setValue2] = useState(0);
 
@@ -38,7 +38,7 @@ export const BasicSlider = (props) => {
     console.log('VALUE CHANGED')
     console.log(value2)
   }, [value2]);
-  
+
 
   return (
     <div>
@@ -53,22 +53,22 @@ export const BasicSlider = (props) => {
         <Handles>
           {({ handles, getHandleProps }) => (
             <div className="slider-handles">
-                
-                <Handle
-                  key={handles[0].id}
-                  handle={handles[0]}
-                  time={props.time}
-                  getHandleProps={getHandleProps}
-                  updateVal={setValue}
-                />
 
-                <Handle
-                  key={handles[1].id}
-                  handle={handles[1]}
-                  time={props.time}
-                  getHandleProps={getHandleProps}
-                  updateVal={setValue2}
-                />
+              <Handle
+                key={handles[0].id}
+                handle={handles[0]}
+                time={props.time}
+                getHandleProps={getHandleProps}
+                updateVal={setValue}
+              />
+
+              <Handle
+                key={handles[1].id}
+                handle={handles[1]}
+                time={props.time}
+                getHandleProps={getHandleProps}
+                updateVal={setValue2}
+              />
 
               {/* {handles.map(handle => (
                 
