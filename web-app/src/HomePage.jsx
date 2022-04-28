@@ -13,7 +13,9 @@ export default class HomePage extends Component {
             fullData: [],
             selectedClasses: [],
             sliderVal1: 0,
-            sliderVal2: 0,
+            sliderVal2: 0
+            // sliderVal3: 0,
+            // sliderVal4: 0,
         };
 
         this.createViz = this.createViz.bind(this);
@@ -22,16 +24,29 @@ export default class HomePage extends Component {
         this.plotClassInfo = this.plotClassInfo.bind(this);
         this.setSliderVal1 = this.setSliderVal1.bind(this);
         this.setSliderVal2 = this.setSliderVal2.bind(this);
+
+        // this.setSliderVal3 = this.setSliderVal3.bind(this)
+        // this.setSliderVal4 = this.setSliderVal4.bind(this)
+
+
         this.updateSemester = this.updateSemester(this)
     }
 
     setSliderVal1(newVal) {
-        this.setState({'sliderVal1': newVal})
+        this.setState({ 'sliderVal1': newVal })
     }
 
     setSliderVal2(newVal) {
-        this.setState({'sliderVal2': newVal})
+        this.setState({ 'sliderVal2': newVal })
     }
+
+    // setSliderVal3(newVal) {
+    //     this.setState({ 'sliderVal3': newVal })
+    // }
+
+    // setSliderVal4(newVal) {
+    //     this.setState({ 'sliderVal4': newVal })
+    // }
 
     async createViz() {
         let div = d3.select('#viz');
@@ -146,20 +161,20 @@ export default class HomePage extends Component {
         console.log('P');
         let p = d3.select('#sem').node().value;
         console.log(p)
-        if (p==="FA22") {
+        if (p === "FA22") {
             let data = await d3.csv(fullDataFile);
             this.setState({ fullData: data });
-        } else if (p==="SP22") {
+        } else if (p === "SP22") {
             let data = await d3.csv(fullDataFileSP);
             this.setState({ fullData: data });
         }
-        
+
     }
-    
-    
-    
+
+
+
     updateSearch() {
-        
+
 
         // let aplusChecked = d3.select('#check-med-1').property('checked');
         // let aChecked = d3.select('#check-med-2').property('checked');
@@ -228,23 +243,30 @@ export default class HomePage extends Component {
             console.log(classes);
         }
 
-        let profDif = Number(d3.select('#prof-diff-text').property('value'));
+        // let profDif = Number(d3.select('#prof-diff-text').property('value'));
         let profDifSlider = d3.select('#prof-diff-slider')//.attr('minimum')//.handle.value;
         console.log('Slide');
         console.log(profDifSlider);
         let val1 = this.state.sliderVal1;
         let val2 = this.state.sliderVal2;
-        if (val1 !== 1 && val2 !== 5) {
+        console.log(val2)
+        if (!(val1 == 1 && val2 == 5)) {
             // filter the previous classes
-
+            console.log(val1)
             classes = classes.filter(class_ => class_['Difficulty'] !== "" && (Number(class_['Difficulty']) <= val2 && Number(class_['Difficulty']) >= val1));
             console.log(classes)
         }
-
+        console.log(val2)
         let classDif = Number(d3.select('#class-diff-text').property('value'));
+        // let classDifSlider = d3.select('#class-diff-slider')
+        // let val3 = this.state.sliderVal3;
+        // let val4 = this.state.sliderVal4;
         if (classDif !== 0) {
+            // if (val3 !== 1 && val4 !== 5) {
             // filter the previous classes
             classes = classes.filter(class_ => class_['CU_Reviews_Difficulty'] !== "" && (Number(class_['CU_Reviews_Difficulty']) <= classDif));
+
+            // classes = classes.filter(class_ => class_['CU_Reviews_Difficulty'] !== "" && (Number(class_['CU_Reviews_Difficulty']) <= val4 && Number(class_['CU_Reviews_Difficulty']) >= val3));
             console.log(classes)
         }
 
@@ -310,6 +332,8 @@ export default class HomePage extends Component {
         console.log('SLIDER VAL')
         console.log(this.state.sliderVal1)
         console.log(this.state.sliderVal2)
+        // console.log(this.state.sliderVal3)
+        // console.log(this.state.sliderVal4)
 
         if (this.state.showPlot) {
             list = <ul id='class-info'>Class Info</ul>;
@@ -418,8 +442,8 @@ export default class HomePage extends Component {
                             <div>
                                 {/* <input type="checkbox" name="check-6" value="check-6" id="check-6" /> */}
                                 <label for="check-6">Professor Difficulty</label>
-                                <input class="text-input" id='prof-diff-text' type="text" placeholder="From RateMyProf, 0...5"></input>
-                                <BasicSlider id = "prof-diff-slider" updateVal1={this.setSliderVal1} updateVal2={this.setSliderVal2} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                {/* <input class="text-input" id='prof-diff-text' type="text" placeholder="From RateMyProf, 0...5"></input> */}
+                                <BasicSlider id="prof-diff-slider" updateVal1={this.setSliderVal1} updateVal2={this.setSliderVal2} minimum={1} maximum={5} time={false} ></BasicSlider>
 
                                 <br></br>
                             </div>
@@ -430,7 +454,7 @@ export default class HomePage extends Component {
                                 {/* <input type="checkbox" name="check-7" value="check-7" id="check-7" /> */}
                                 <label for="check-7">Class Difficulty</label>
                                 <input class="text-input" id='class-diff-text' type="text" placeholder="From CUReviews, 0...5"></input>
-                                {/* <BasicSlider minimum={1} maximum={5} time={false}></BasicSlider> */}
+                                {/* <BasicSlider id="class-diff-slider" updateVal1={this.setSliderVal3} updateVal2={this.setSliderVal4} minimum={1} maximum={5} time={false} ></BasicSlider> */}
 
                                 <br></br>
                             </div>
@@ -475,16 +499,16 @@ export default class HomePage extends Component {
                                 <br></br>
                             </div>
                         </div>
-                    <div>
-                    <form action="#">
-                        <label for="sem">Semester</label>
-                        <select name="sems" id="sem">
-                            <option value="FA22">FA '22</option>
-                            <option value="SP22">SP '22</option>
-                        </select>
-                        {/* <input type="submit" value="Submit" /> */}
-                    </form>
-                    </div>
+                        <div>
+                            <form action="#">
+                                <label for="sem">Semester</label>
+                                <select name="sem" id="sem">
+                                    <option value="FA22">FA '22</option>
+                                    <option value="SP22">SP '22</option>
+                                </select>
+                                {/* <input type="submit" value="Submit" /> */}
+                            </form>
+                        </div>
                     </div>
                     <br></br>
                 </div>
