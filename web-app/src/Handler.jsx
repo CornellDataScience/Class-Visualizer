@@ -12,7 +12,6 @@ export function Handle({
     5: '12:20'
   };
 
-  console.log('Time', time)
   updateVal(value)
 
   return (

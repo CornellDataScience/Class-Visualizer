@@ -3,7 +3,20 @@ import * as d3 from 'd3';
 import fullDataFileSP from './data/FullerData_CUReviews.csv';
 import fullDataFile from './data/FullerData_CUReviews_FA22.csv';
 import { BasicSlider } from './BasicSlider.jsx';
-import { Button, ButtonGroup, ButtonToolbar, InputGroup, FormControl } from 'react-bootstrap';
+import { Button, ButtonGroup, ButtonToolbar, Dropdown, DropdownButton } from 'react-bootstrap';
+
+// Department: Dept
+// Professor: Professor_x
+// Course Number: Number
+// Course Name: Course_Name
+// Start Time: Start_Time
+// End Time: End_Time
+// Professor Difficulty: Difficulty
+// Class Difficulty: CU_Reviews_Difficulty
+// Class Rating: CU_Reviews_Rating
+// Class Workload: CU_Reviews_Workload
+// Median Grade: Median Grade
+
 
 export default class HomePage extends Component {
 
@@ -22,15 +35,36 @@ export default class HomePage extends Component {
             sliderVal6: 0,
             sliderVal7: 0,
             sliderVal8: 0,
+            medianGrades: [],
+            fieldsShown: [],
+            oldFieldsShown: [],
+            toggle: false
         };
+
+        this.allGrades = ['B-', 'B', 'B+', 'A-', 'A', 'A+'];
+        this.fieldMapping = {
+            'Dept': 'Department',
+            'Professor_x': 'Professor',
+            'Number': 'Course Number',
+            'Course_Name': 'Course Name',
+            'Start_Time': 'Start Time',
+            'End_Time': 'End Time',
+            'Difficulty': 'Professor Difficulty',
+            'CU_Reviews_Difficulty': 'Class Difficulty',
+            'CU_Reviews_Rating': 'Class Rating',
+            'CU_Reviews_Workload': 'Class Workload',
+            'Median Grade': 'Median Grade'
+        }
 
         this.createViz = this.createViz.bind(this);
         this.updateSearch = this.updateSearch.bind(this);
         this.updateSemester = this.updateSemester.bind(this);
         this.plotClassInfo = this.plotClassInfo.bind(this);
+        this.updateMedianGrade = this.updateMedianGrade.bind(this);
+        this.toggleTableInfo = this.toggleTableInfo.bind(this);
+
         this.setSliderVal1 = this.setSliderVal1.bind(this);
         this.setSliderVal2 = this.setSliderVal2.bind(this);
-
         this.setSliderVal3 = this.setSliderVal3.bind(this)
         this.setSliderVal4 = this.setSliderVal4.bind(this)
         this.setSliderVal5 = this.setSliderVal5.bind(this)
@@ -54,6 +88,7 @@ export default class HomePage extends Component {
     setSliderVal4(newVal) {
         this.setState({ 'sliderVal4': newVal })
     }
+
     setSliderVal5(newVal) {
         this.setState({ 'sliderVal5': newVal })
     }
@@ -61,6 +96,7 @@ export default class HomePage extends Component {
     setSliderVal6(newVal) {
         this.setState({ 'sliderVal6': newVal })
     }
+
     setSliderVal7(newVal) {
         this.setState({ 'sliderVal7': newVal })
     }
@@ -71,9 +107,6 @@ export default class HomePage extends Component {
 
     async createViz() {
         let div = d3.select('#viz');
-        //let svg = div.append('svg')
-        //             .attr('width', 1000)
-        //             .attr('height', 500)
         let classData = await d3.csv('Classes_With_Medians.csv');
         let profData = await d3.csv('RMP/RMP.csv');
         let data = await d3.csv(fullDataFile);
@@ -89,43 +122,24 @@ export default class HomePage extends Component {
         })
     }
 
+    toggleTableInfo(e) {
+        console.log(Object.keys(this.fieldMapping))
+        console.log(this.state.toggle)
+        
+        let newFields = this.state.toggle ? this.state.oldFieldsShown : Object.keys(this.fieldMapping);
+        this.setState({oldFieldsShown: this.state.fieldsShown})
+        this.setState({fieldsShown: newFields}, this.plotClassInfo);
+        this.setState({toggle: !this.state.toggle});
+    }
+
     plotClassInfo() {
         let class_data = this.updateSearch()
         let svg = d3.select("#class-info-plot")
             .append('svg')
             .attr('height', 500)
             .attr('width', 1000)
-
-        //let classes = [{ 'Class': 'CS 1110', 'Median': 'A', 'Num': 0 }, { 'Class': 'CS 2110', 'Median': 'A+', 'Num': 1 }];
-
-        // let box = svg.selectAll('g')
-        //  .data(classes)
-        //  .enter()
-        //   .append('g')
-
-        // box.selectAll('rect')
-        //     .data(classes)
-        //     .join('rect')
-        //     .attr('x', 150)
-        //     .attr('y', 50)
-        //     .attr('width', 200)
-        //     .attr('height', 200)
-        //     .style('fill', 'orange')
-        //     .text('test')
-
+        
         let list = d3.select('#class-info');
-        // list.selectAll('li.class-info-list')
-        //     .data(classes)
-        //     .join('li')
-        //     .attr('class', 'class-info-list')
-        //     .text()
-
-        // Top text gets hidden - need to have separate g tags for the box and text, and raise the text one
-        // let text = box.append('text')
-        //     .attr('x', 150)
-        //     .attr('y', d => d['Num'] * 100 + 100)
-        //     .text(d => d.Class + ' has an ' + d.Median + ' median')
-        // text.raise()
 
         // Update Table
         let tableBody = d3.select('#class-info-table tbody');
@@ -133,20 +147,28 @@ export default class HomePage extends Component {
         let tableRows = tableBody.selectAll('tr')
             .data(class_data)
             .join('tr')
+        
+        console.log('FIELDS')
+        let fields = this.state.fieldsShown;
+        console.log(fields)
 
         let tableRowEntries = tableRows.selectAll('td')
             .data((d) => {
-                return [d['Dept + Number'], d['Course_Name'], d['Professor_x'], d['Median Grade']]
-                // return [d[this.state.selectedClasses]]
+                let temp = [];
+                fields.forEach( ele => temp.push(d[ele]))
+                //return [d['Dept + Number'], d['Course_Name'], d['Professor_x'], d['Median Grade']]
+                return temp;
+
             })
             .join('td')
             .text(d => d)
-        //tableHeader.append("th").text('Additional Info');
-        console.log(tableHeader);
+
         d3.select('#class-info-header-row').selectAll('th')
-            .data(['Course', 'Name', 'Professor', 'Median'])
-            .join("th")
-            .text(d => d) //'Additional Info');
+            //.data(['Course', 'Name', 'Professor', 'Median'])
+            .data(fields.map( d => this.fieldMapping[d]))
+            .join('th')
+            .text(d => d)
+        
         tableRows.selectAll('td.table-button')
             .data(d => [d])
             .attr('class', 'table-button')
@@ -154,18 +176,10 @@ export default class HomePage extends Component {
             .append('button')
             .text((d) => 'Test')
             .on('click', d => alert(d.srcElement.__data__['Number']))
-
-
     }
 
-    updateSemester() {
-        console.log('UPDATING');
-        console.log('P');
-        console.log(d3.select('#sem'))
-        console.log('F')
-        let p = d3.select('#sem').attr('x');
-        console.log(p)
-        let semester = 'FA22'
+    updateSemester(semester) {
+        // let semester = d3.select('#sem').property('value');
         console.log('SEMESTER')
         console.log(semester)
         if (semester === "FA22") {
@@ -173,198 +187,119 @@ export default class HomePage extends Component {
         } else if (semester === "SP22") {
             this.setState({ fullData: this.state.springData });
         }
-        console.log("UPDATE SEARCH")
+
         this.plotClassInfo()
-
     }
-
-
 
     updateSearch() {
 
-
-        // let aplusChecked = d3.select('#check-med-1').property('checked');
-        // let aChecked = d3.select('#check-med-2').property('checked');
-        // let aminusChecked = d3.select('#check-med-3').property('checked');
-        // let bplusChecked = d3.select('#check-med-4').property('checked');
-        // let bChecked = d3.select('#check-med-5').property('checked');
-        // let bminusChecked = d3.select('#check-med-6').property('checked');
-        let medgrades = [];
-        // if (aplusChecked) {
-        //     medgrades.push("A+")
-        // }
-        // if (aChecked) {
-        //     medgrades.push("A")
-        // }
-        // if (aminusChecked) {
-        //     medgrades.push("A-")
-        // }
-        // if (bplusChecked) {
-        //     medgrades.push("B+")
-        // }
-        // if (bChecked) {
-        //     medgrades.push("B")
-        // }
-        // if (bminusChecked) {
-        //     medgrades.push("B-")
-        // }
-
-        // let courseNameChecked = d3.select('#check-5').property('checked');
-        // let profDifChecked = d3.select('#check-6').property('checked');
-        // let classDifChecked = d3.select('#check-7').property('checked')
-        // let classRatingChecked = d3.select('#check-8').property('checked')
-        // let classWorloadChecked = d3.select('#check-9').property('checked')
-        // let startTimeChecked = d3.select('#check-10').property('checked')
-        // let endTimeChecked = d3.select('#check-11').property('checked')
-
-        //let medGradeChecked = d3.select('#check-3').property('checked');
-
         let classes = this.state.fullData;
+        let fields = [];
 
-        console.log('before dep')
         let department = d3.select('#department-text').property('value');
-        console.log(department);
         if (department !== '') {
             classes = classes.filter(class_ => class_['Dept'].toLowerCase().includes(department.toLowerCase()));
-            console.log(classes);
+            fields.push('Dept');
         }
         let prof = d3.select('#prof-text').property('value');
         if (prof !== '') {
-            // filter the previous classes
-            classes = classes.filter(class_ => class_['Professor'].toLowerCase().includes(prof.toLowerCase()));
-            console.log(classes)
+            classes = classes.filter(class_ => class_['Professor_x'].toLowerCase().includes(prof.toLowerCase()));
+            fields.push('Professor_x')
         }
 
         let courseNum = Number(d3.select('#course-num-text').property('value'));
         if (courseNum !== 0) {
-            // filter the previous classes
             classes = classes.filter(class_ => Number(class_['Number']) === courseNum);
-            console.log(classes)
+            fields.push('Number')
         }
 
         let courseName = d3.select('#course-name-text').property('value');
         if (courseName !== '') {
-            // filter the previous classes
             classes = classes.filter(class_ => class_['Course_Name'].toLowerCase().includes(courseName.toLowerCase()));
-            console.log(classes);
-        }
-
-        // let profDif = Number(d3.select('#prof-diff-text').property('value'));
-        let profDifSlider = d3.select('#prof-diff-slider')//.attr('minimum')//.handle.value;
-        let val1 = this.state.sliderVal1;
-        let val2 = this.state.sliderVal2;
-        if (!(val1 == 1 && val2 == 5)) {
-            // filter the previous classes
-            // this.setState({ selectedClasses: this.state.selectedClasses.concat(['Difficulty']) })
-            classes = classes.filter(class_ => class_['Difficulty'] !== "" && (Number(class_['Difficulty']) <= val2 && Number(class_['Difficulty']) >= val1));
-            console.log(classes)
-        }
-        // let classDif = Number(d3.select('#class-diff-text').property('value'));
-        let classDifSlider = d3.select('#class-diff-slider')
-        let val3 = this.state.sliderVal3;
-        let val4 = this.state.sliderVal4;
-        // if (classDif !== 0) {
-        if (!(val3 == 1 && val4 == 5)) {
-            // filter the previous classes
-            // classes = classes.filter(class_ => class_['CU_Reviews_Difficulty'] !== "" && (Number(class_['CU_Reviews_Difficulty']) <= classDif));
-
-            classes = classes.filter(class_ => class_['CU_Reviews_Difficulty'] !== "" && (Number(class_['CU_Reviews_Difficulty']) <= val4 && Number(class_['CU_Reviews_Difficulty']) >= val3));
-            console.log(classes)
-        }
-
-        // let classRate = Number(d3.select('#class-rat-text').property('value'));
-        let classRate = d3.select('#class-rat-slider')
-        let val5 = this.state.sliderVal5;
-        let val6 = this.state.sliderVal6;
-        // if (classRate !== 0) {
-        if (!(val5 == 1 && val6 == 5)) {
-            // classes = classes.filter(class_ => class_['CU_Reviews_Rating'] !== "" && (Number(class_['CU_Reviews_Rating']) >= classRate));
-            classes = classes.filter(class_ => class_['CU_Reviews_Rating'] !== "" && (Number(class_['CU_Reviews_Rating']) >= val5 && (Number(class_['CU_Reviews_Rating']) <= val6)));
-
-            console.log(classes)
-        }
-
-        // let classWork = Number(d3.select('#class-work-text').property('value'));
-        let classWork = d3.select('#class-work-slider')
-        let val7 = this.state.sliderVal7;
-        let val8 = this.state.sliderVal8;
-        // if (classWork !== 0) {
-        if (!(val7 == 1 && val8 == 5)) {
-            // classes = classes.filter(class_ => class_['CU_Reviews_Workload'] !== "" && (Number(class_['CU_Reviews_Workload']) <= classWork));
-            classes = classes.filter(class_ => class_['CU_Reviews_Workload'] !== "" && (Number(class_['CU_Reviews_Workload']) <= val8 && (Number(class_['CU_Reviews_Workload']) >= val7)));
-
-            console.log(classes)
+            fields.push('Course_Name')
         }
 
         let startTime = d3.select('#start-time-text').property('value');
         if (startTime !== '') {
             classes = classes.filter(class_ => class_['Start_Time'].includes(startTime));
-            console.log(classes)
+            fields.push('Start_Time')
         }
 
         let endTime = d3.select('#end-time-text').property('value');
         if (endTime !== '') {
             classes = classes.filter(class_ => class_['End_Time'].includes(endTime));
-            console.log(classes)
+            fields.push('End_Time')
         }
 
-
-        if (medgrades.length !== 0) {
-            classes = classes.filter(class_ => medgrades.includes(class_['Median Grade']));
+        let profDifSlider = d3.select('#prof-diff-slider')
+        let val1 = this.state.sliderVal1;
+        let val2 = this.state.sliderVal2;
+        if (!(val1 === 1 && val2 === 5)) {
+            classes = classes.filter(class_ => class_['Difficulty'] !== "" && (Number(class_['Difficulty']) <= val2 && Number(class_['Difficulty']) >= val1));
+            fields.push('Difficulty')
         }
+        
+        let classDifSlider = d3.select('#class-diff-slider')
+        let val3 = this.state.sliderVal3;
+        let val4 = this.state.sliderVal4;
+        if (!(val3 === 1 && val4 === 5)) {
+            classes = classes.filter(class_ => class_['CU_Reviews_Difficulty'] !== "" && (Number(class_['CU_Reviews_Difficulty']) <= val4 && Number(class_['CU_Reviews_Difficulty']) >= val3));
+            fields.push('CU_Reviews_Difficulty')
+        }
+
+        let classRate = d3.select('#class-rat-slider')
+        let val5 = this.state.sliderVal5;
+        let val6 = this.state.sliderVal6;
+        if (!(val5 === 1 && val6 === 5)) {
+            classes = classes.filter(class_ => class_['CU_Reviews_Rating'] !== "" && (Number(class_['CU_Reviews_Rating']) >= val5 && (Number(class_['CU_Reviews_Rating']) <= val6)));
+            fields.push('CU_Reviews_Rating')
+        }
+
+        let classWork = d3.select('#class-work-slider')
+        let val7 = this.state.sliderVal7;
+        let val8 = this.state.sliderVal8;
+        if (!(val7 === 1 && val8 === 5)) {
+            classes = classes.filter(class_ => class_['CU_Reviews_Workload'] !== "" && (Number(class_['CU_Reviews_Workload']) <= val8 && (Number(class_['CU_Reviews_Workload']) >= val7)));
+            fields.push('CU_Reviews_Workload')
+        }
+
+        let medianGrades = this.state.medianGrades;
+        if (medianGrades.length !== 0) {
+            classes = classes.filter(class_ => medianGrades.includes(class_['Median Grade']));
+            fields.push('Median Grade')
+        }
+
+        // Update the fields shown
+        this.setState({fieldsShown: fields});
 
         classes.sort((d1, d2) => {
             return Number(d1['Number']) - Number(d2['Number']);
         });
 
-        // console.log('UPDATED CLASSES', classes)
-
-        // this.setState({ selectedClasses: classes });
+        console.log(classes);
         return classes
     }
 
+    updateMedianGrade(e) {
+        // list of all grades at the selected and above
+        this.setState({medianGrades: this.allGrades.slice(this.allGrades.indexOf(e.target.value))});
+    }
+
     componentDidMount() {
-
         this.createViz();
-        // let data = await d3.csv(fullDataFile);
-        // let data2 = await d3.csv(fullDataFileSP);
-
         d3.selectAll('.text-input').on('change', this.plotClassInfo)
-        //d3.select('#sem').on('change', this.updateSemester)
-        d3.select('#sem').on('change', function (d) {
-            console.log("CHANGED")
-            let value = d3.select(this).property('value')
-            console.log(value)
 
-            if (value === "FA22") {
-                this.setState({
-                    fullData: this.state.fallData
-                });
-            } else if (value === "SP22") {
-                this.setState({ fullData: this.state.springData });
-            }
-            this.plotClassInfo()
-        })
-
-
-        console.log('FULL DATA');
-        console.log(this.state.fullData);
-
+        // d3.select('#sem').on('change', () => {
+        //     console.log(d3.select('#sem').property('value'))
+        // })
     }
 
     componentDidUpdate() {
-        this.plotClassInfo()
+        //this.plotClassInfo() // causes infinite loop
     }
-
 
     render() {
         let list;
-
-        console.log('SLIDER VAL')
-        console.log(this.state.sliderVal1)
-        console.log(this.state.sliderVal2)
-        // console.log(this.state.sliderVal3)
-        // console.log(this.state.sliderVal4)
 
         if (this.state.showPlot) {
             list = <ul id='class-info'>Class Info</ul>;
@@ -373,120 +308,39 @@ export default class HomePage extends Component {
         }
         return (
             <div className="Home-Page App">
-
+                <br />
                 <h1>Class Visualizer</h1>
 
                 <div>
-                    <br />
-                    <b>Filter By</b>
-
                     <div class="row">
                         <div class="col">
                             <div>
-                                {/* <input type="checkbox" name="check-1" value="check-1" id="check-1" /> */}
                                 <label for="check-1">Department</label>
                                 <input class="text-input" id='department-text' type="text" placeholder="Enter Department..."></input>
-
                                 <br></br>
                             </div>
                         </div>
 
                         <div class="col">
                             <div>
-                                {/* <input type="checkbox" name="check-2" value="check-2" id="check-2" /> */}
                                 <label for="check-2">Professor</label>
                                 <input class="text-input" id='prof-text' type="text" placeholder="Enter Prof Name..."></input>
                                 <br></br>
                             </div>
                         </div>
-
-                        <div class="col">
-                            <div>
-                                {/* <input type="checkbox" name="check-4" value="check-4" id="check-4" /> */}
-                                <label for="check-4">Course Number</label>
-                                <input class="text-input" id='course-num-text' type="text" placeholder="ex: 1110"></input>
-                                <br></br>
-                            </div>
-
-                        </div>
-
-
-                    </div>
-
-                    <div>
-                        <ButtonToolbar className="justify-content-center" aria-label="Toolbar with Button groups">
-                            <label class="med-grade-text">Median Grade</label>
-                            <ButtonGroup aria-label="First group">
-                                <Button variant="secondary">A+</Button>{' '}
-                                <Button variant="secondary">A</Button>{' '}
-                                <Button variant="secondary">A-</Button>{' '}
-                                <Button variant="secondary">B+</Button>{' '}
-                                <Button variant="secondary">B</Button>{' '}
-                                <Button variant="secondary">B-</Button>
-                            </ButtonGroup>
-                        </ButtonToolbar>
-
-                        <div class="row">
-                            <div class="col">
-                                <input type="checkbox" id="check-med-1" value="check-med-1" class="check-med" />
-                                <label for="check-med-1">A+</label>
-                            </div>
-
-                            <div class="col">
-                                <input type="checkbox" id="check-med-2" value="check-med-2" class="check-med" />
-                                <label for="check-med-2">A</label>
-                            </div>
-
-                            <div class="col">
-                                <input type="checkbox" id="check-med-3" value="check-med-3" class="check-med" />
-                                <label for="check-med-3">A-</label>
-                            </div>
-
-                            <div class="col">
-                                <input type="checkbox" id="check-med-4" value="check-med-4" class="check-med" />
-                                <label for="check-med-4">B+</label>
-                            </div>
-
-                            <div class="col">
-                                <input type="checkbox" id="check-med-5" value="check-med-5" class="check-med" />
-                                <label for="check-med-5">B</label>
-                            </div>
-
-                            <div class="col">
-                                <input type="checkbox" id="check-med-6" value="check-med-6" class="check-med" />
-                                <label for="check-med-6">B-</label>
-                            </div>
-                        </div>
-
                     </div>
 
                     <div class="row">
                         <div class="col">
+                            <label for="check-4">Course Number</label>
+                            <input class="text-input" id='course-num-text' type="text" placeholder="Ex: 1110"></input>
+                            <br></br>
+                        </div>
+                        
+                        <div class="col">
                             <div>
-                                {/* <input type="checkbox" name="check-5" value="check-5" id="check-5" /> */}
                                 <label for="check-5">Course Name</label>
-                                <input class="text-input" id='course-name-text' type="text" placeholder="Enter course name..."></input>
-                                <br></br>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div>
-                                {/* <input type="checkbox" name="check-6" value="check-6" id="check-6" /> */}
-                                <label for="check-6">Professor Difficulty</label>
-                                {/* <input class="text-input" id='prof-diff-text' type="text" placeholder="From RateMyProf, 0...5"></input> */}
-                                <BasicSlider id="prof-diff-slider" updateVal1={this.setSliderVal1} updateVal2={this.setSliderVal2} minimum={1} maximum={5} time={false} ></BasicSlider>
-
-                                <br></br>
-                            </div>
-                        </div>
-
-                        <div class="col">
-                            <div>
-                                {/* <input type="checkbox" name="check-7" value="check-7" id="check-7" /> */}
-                                <label for="check-7">Class Difficulty</label>
-                                {/* <input class="text-input" id='class-diff-text' type="text" placeholder="From CUReviews, 0...5"></input> */}
-                                <BasicSlider id="class-diff-slider" updateVal1={this.setSliderVal3} updateVal2={this.setSliderVal4} minimum={1} maximum={5} time={false} ></BasicSlider>
-
+                                <input class="text-input" id='course-name-text' type="text" placeholder="Enter Course Name..."></input>
                                 <br></br>
                             </div>
                         </div>
@@ -495,59 +349,87 @@ export default class HomePage extends Component {
                     <div class="row">
                         <div class="col">
                             <div>
-                                {/* <input type="checkbox" name="check-8" value="check-8" id="check-8" /> */}
-                                <label for="check-8">Class Rating</label>
-                                {/* <input class="text-input" id='class-rat-text' type="text" placeholder="From CUReviews, 0...5"></input> */}
-                                <BasicSlider id="class-rat-slider" updateVal1={this.setSliderVal5} updateVal2={this.setSliderVal6} minimum={1} maximum={5} time={false} ></BasicSlider>
-
-                                <br></br>
-                            </div>
-                        </div>
-
-                        <div class="col">
-                            <div>
-                                {/* <input type="checkbox" name="check-9" value="check-9" id="check-9" /> */}
-                                <label for="check-9">Class Workload</label>
-                                {/* <input class="text-input" id='class-work-text' type="text" placeholder="From CUReviews, 0...5"></input> */}
-                                <BasicSlider id="class-work-slider" updateVal1={this.setSliderVal7} updateVal2={this.setSliderVal8} minimum={1} maximum={5} time={false} ></BasicSlider>
-
-                                <br></br>
-                            </div>
-                        </div>
-
-                        <div class="col">
-                            <div>
-                                {/* <input type="checkbox" name="check-10" value="check-10" id="check-10" /> */}
                                 <label for="check-10">Start Time</label>
                                 <input class="text-input" id='start-time-text' type="text" placeholder="Enter start time..."></input>
-                                {/* <BasicSlider minimum={1} maximum={5} time={true}></BasicSlider> */}
-
-                                <br></br>
                             </div>
                         </div>
 
                         <div class="col">
                             <div>
-                                <input type="checkbox" name="check-11" value="check-11" id="check-11" />
                                 <label for="check-11">End Time</label>
                                 <input class="text-input" id='end-time-text' type="text" placeholder="Enter end time..."></input>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row my-0">
+                        <div class="col my-0">
+                            <div>
+                                <label for="check-6">Professor Difficulty</label>
+                                <BasicSlider id="prof-diff-slider" updateVal1={this.setSliderVal1} updateVal2={this.setSliderVal2} minimum={1} maximum={5} time={false} ></BasicSlider>
                                 <br></br>
                             </div>
                         </div>
-                        <div>
-                            {/* <form action="#"> */}
-                            <label>Semester</label>
-                            <select name="sem" id="sem">
-                                <option value="FA22">FA '22</option>
-                                <option value="SP22">SP '22</option>
-                            </select>
 
-
-                            {/* <input type="submit" value="Submit" /> */}
-                            {/* </form> */}
+                        <div class="col my-0">
+                            <div>
+                                <label for="check-7">Class Difficulty</label>
+                                <BasicSlider id="class-diff-slider" updateVal1={this.setSliderVal3} updateVal2={this.setSliderVal4} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                <br></br>
+                            </div>
                         </div>
                     </div>
-                    <br></br>
+
+                    <div class="row my-0">
+                        <div class="col my-0">
+                            <div>
+                                <label for="check-8">Class Rating</label>
+                                <BasicSlider id="class-rat-slider" updateVal1={this.setSliderVal5} updateVal2={this.setSliderVal6} minimum={1} maximum={5} time={false} ></BasicSlider>
+                            </div>
+                        </div>
+
+                        <div class="col my-0">
+                            <div>
+                                <label for="check-9">Class Workload</label>
+                                <BasicSlider id="class-work-slider" updateVal1={this.setSliderVal7} updateVal2={this.setSliderVal8} minimum={1} maximum={5} time={false} ></BasicSlider>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <label class="med-grade-text">Median Grade</label>
+                            <ButtonToolbar className="justify-content-center" aria-label="Toolbar with Button groups">
+                                <ButtonGroup aria-label="First group" onClick={this.updateMedianGrade}>
+                                    <Button variant="secondary" value="A+">A+</Button>{' '}
+                                    <Button variant="secondary" value="A">A</Button>{' '}
+                                    <Button variant="secondary" value="A-">A-</Button>{' '}
+                                    <Button variant="secondary" value="B+">B+</Button>{' '}
+                                    <Button variant="secondary" value="B">B</Button>{' '}
+                                    <Button variant="secondary" value="B-">B-</Button>
+                                </ButtonGroup>
+                            </ButtonToolbar>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                        <label class="toggle-all-text">Toggle Information Displayed</label>
+                        <br></br>
+                        <ButtonGroup aria-label="Second group" onClick={this.toggleTableInfo}>
+                            <Button variant="secondary" value="Toggle">Toggle</Button>
+                        </ButtonGroup>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <DropdownButton id="semester-dropdown" title="Semester" onSelect={this.updateSemester}>
+                                <Dropdown.Item eventKey="FA22">FA '22</Dropdown.Item>
+                                <Dropdown.Item eventKey="SP22">SP '22</Dropdown.Item>
+                            </DropdownButton>
+                        </div>
+                    </div>
                 </div>
 
                 <br />
@@ -556,16 +438,11 @@ export default class HomePage extends Component {
                 <div style={{ align: "center" }}>
                     <br></br>
 
-                    <br></br>
-                    <br></br>
-
-
                     <table id="class-info-table">
                         <thead id="class-info-header">
                             <tr id="class-info-header-row"></tr>
                         </thead>
                         <tbody></tbody>
-
                     </table>
 
                     {list}

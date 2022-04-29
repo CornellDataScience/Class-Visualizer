@@ -94,18 +94,17 @@ td {
   float: left;
   width: 20%;
   font-size: 24px;
-  padding: 10px;
+  padding: 15px;
 }
 
 .row {
-  padding: 5px 5px;
+  padding: 0px 250px;
   height: auto;
   overflow: auto;
 }
 
 .text-input {
   width: 200px;
-
 }
 
 
