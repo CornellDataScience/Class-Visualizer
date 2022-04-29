@@ -11,6 +11,8 @@ export default class HomePage extends Component {
         super();
         this.state = {
             fullData: [],
+            fallData: [],
+            springData: [],
             selectedClasses: ['Dept + Number', 'Course_Name', 'Professor_x'],
             sliderVal1: 0,
             sliderVal2: 0,
@@ -23,8 +25,8 @@ export default class HomePage extends Component {
         };
 
         this.createViz = this.createViz.bind(this);
-        this.changeClass = this.changeClass.bind(this);
         this.updateSearch = this.updateSearch.bind(this);
+        this.updateSemester = this.updateSemester.bind(this);
         this.plotClassInfo = this.plotClassInfo.bind(this);
         this.setSliderVal1 = this.setSliderVal1.bind(this);
         this.setSliderVal2 = this.setSliderVal2.bind(this);
@@ -35,11 +37,6 @@ export default class HomePage extends Component {
         this.setSliderVal6 = this.setSliderVal6.bind(this)
         this.setSliderVal7 = this.setSliderVal7.bind(this)
         this.setSliderVal8 = this.setSliderVal8.bind(this)
-
-
-
-
-        this.updateSemester = this.updateSemester(this)
     }
 
     setSliderVal1(newVal) {
@@ -80,7 +77,11 @@ export default class HomePage extends Component {
         let classData = await d3.csv('Classes_With_Medians.csv');
         let profData = await d3.csv('RMP/RMP.csv');
         let data = await d3.csv(fullDataFile);
+        let data2 = await d3.csv(fullDataFileSP);
+
         this.setState({ fullData: data });
+        this.setState({ fallData: data });
+        this.setState({ springData: data2 });
 
         let profs = [];
         classData.forEach(d => {
@@ -157,42 +158,23 @@ export default class HomePage extends Component {
 
     }
 
-    changeClass() {
-        let className = d3.select(this).property("value");
-        console.log(className);
-        console.log(this.state.fullData);
-
-        let classObj = this.state.fullData.find(class_ => class_['Dept + Number'] === className);
-        console.log(classObj);
-
-        let courseName = classObj['Course_Name'];
-        let prof = classObj['Professor']
-        let medGrade = classObj['Median Grade'];
-        let difficulty = classObj['Difficulty'];
-        let avgRating = classObj['Average_Rating'];
-
-
-        let div = d3.select('#selected-class-info');
-        div.selectAll('*').remove();
-        div.append('p').text(courseName);
-        div.append('p').text(prof);
-        div.append('p').text(medGrade);
-        div.append('p').text(difficulty);
-        div.append('p').text(avgRating);
-    }
-
-    async updateSemester() {
+    updateSemester() {
         console.log('UPDATING');
         console.log('P');
-        let p = d3.select('#sem').node().value;
+        console.log(d3.select('#sem'))
+        console.log('F')
+        let p = d3.select('#sem').attr('x');
         console.log(p)
-        if (p === "FA22") {
-            let data = await d3.csv(fullDataFile);
-            this.setState({ fullData: data });
-        } else if (p === "SP22") {
-            let data = await d3.csv(fullDataFileSP);
-            this.setState({ fullData: data });
+        let semester = 'FA22'
+        console.log('SEMESTER')
+        console.log(semester)
+        if (semester === "FA22") {
+            this.setState({ fullData: this.state.fallData });
+        } else if (semester === "SP22") {
+            this.setState({ fullData: this.state.springData });
         }
+        console.log("UPDATE SEARCH")
+        this.plotClassInfo()
 
     }
 
@@ -264,25 +246,19 @@ export default class HomePage extends Component {
         if (courseName !== '') {
             // filter the previous classes
             classes = classes.filter(class_ => class_['Course_Name'].toLowerCase().includes(courseName.toLowerCase()));
-            console.log('COURSE NAME FILTER')
             console.log(classes);
         }
 
         // let profDif = Number(d3.select('#prof-diff-text').property('value'));
         let profDifSlider = d3.select('#prof-diff-slider')//.attr('minimum')//.handle.value;
-        console.log('Slide');
-        console.log(profDifSlider);
         let val1 = this.state.sliderVal1;
         let val2 = this.state.sliderVal2;
-        console.log(val2)
         if (!(val1 == 1 && val2 == 5)) {
             // filter the previous classes
-            console.log(val1)
             // this.setState({ selectedClasses: this.state.selectedClasses.concat(['Difficulty']) })
             classes = classes.filter(class_ => class_['Difficulty'] !== "" && (Number(class_['Difficulty']) <= val2 && Number(class_['Difficulty']) >= val1));
             console.log(classes)
         }
-        console.log(val2)
         // let classDif = Number(d3.select('#class-diff-text').property('value'));
         let classDifSlider = d3.select('#class-diff-slider')
         let val3 = this.state.sliderVal3;
@@ -341,7 +317,7 @@ export default class HomePage extends Component {
             return Number(d1['Number']) - Number(d2['Number']);
         });
 
-        console.log('UPDATED CLASSES', classes)
+        // console.log('UPDATED CLASSES', classes)
 
         // this.setState({ selectedClasses: classes });
         return classes
@@ -350,9 +326,26 @@ export default class HomePage extends Component {
     componentDidMount() {
 
         this.createViz();
+        // let data = await d3.csv(fullDataFile);
+        // let data2 = await d3.csv(fullDataFileSP);
 
         d3.selectAll('.text-input').on('change', this.plotClassInfo)
-        d3.select('#sem').on('change', this.updateSemester)
+        //d3.select('#sem').on('change', this.updateSemester)
+        d3.select('#sem').on('change', function (d) {
+            console.log("CHANGED")
+            let value = d3.select(this).property('value')
+            console.log(value)
+
+            if (value === "FA22") {
+                this.setState({
+                    fullData: this.state.fallData
+                });
+            } else if (value === "SP22") {
+                this.setState({ fullData: this.state.springData });
+            }
+            this.plotClassInfo()
+        })
+
 
         console.log('FULL DATA');
         console.log(this.state.fullData);
@@ -542,14 +535,16 @@ export default class HomePage extends Component {
                             </div>
                         </div>
                         <div>
-                            <form action="#">
-                                <label for="sem">Semester</label>
-                                <select name="sem" id="sem">
-                                    <option value="FA22">FA '22</option>
-                                    <option value="SP22">SP '22</option>
-                                </select>
-                                {/* <input type="submit" value="Submit" /> */}
-                            </form>
+                            {/* <form action="#"> */}
+                            <label>Semester</label>
+                            <select name="sem" id="sem">
+                                <option value="FA22">FA '22</option>
+                                <option value="SP22">SP '22</option>
+                            </select>
+
+
+                            {/* <input type="submit" value="Submit" /> */}
+                            {/* </form> */}
                         </div>
                     </div>
                     <br></br>

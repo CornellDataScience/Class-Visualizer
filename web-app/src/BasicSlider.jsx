@@ -9,7 +9,7 @@ export const BasicSlider = (props) => {
     width: '30%',
     height: 80,
     //border: '1px solid steelblue',
-    left: '400px'
+    left: '150px'
   }
 
   const railStyle = {
@@ -28,15 +28,11 @@ export const BasicSlider = (props) => {
   useEffect(() => {
     props.updateVal1(value)
 
-    console.log('VALUE CHANGED')
-    console.log(value)
   }, [value]);
 
   useEffect(() => {
     props.updateVal2(value2)
 
-    console.log('VALUE CHANGED')
-    console.log(value2)
   }, [value2]);
 
 
