@@ -36,7 +36,7 @@ export default class HomePage extends Component {
             sliderVal7: 0,
             sliderVal8: 0,
             medianGrades: [],
-            fieldsShown: [],
+            fieldsShown: ['Dept', 'Number', 'Course_Name', 'Professor_x', 'Median Grade', 'CU_Reviews_Rating', 'CU_Reviews_Difficulty', 'CU_Reviews_Workload', 'Difficulty', 'Start_Time', 'End_Time'],
             oldFieldsShown: [],
             toggle: false
         };
@@ -107,8 +107,6 @@ export default class HomePage extends Component {
 
     async createViz() {
         let div = d3.select('#viz');
-        let classData = await d3.csv('Classes_With_Medians.csv');
-        let profData = await d3.csv('RMP/RMP.csv');
         let data = await d3.csv(fullDataFile);
         let data2 = await d3.csv(fullDataFileSP);
 
@@ -117,28 +115,28 @@ export default class HomePage extends Component {
         this.setState({ springData: data2 });
 
         let profs = [];
-        classData.forEach(d => {
-            profs.push(d.Professor);
-        })
+
+        this.toggleTableInfo();
+        this.plotClassInfo();
     }
 
     toggleTableInfo(e) {
-        console.log(Object.keys(this.fieldMapping))
-        console.log(this.state.toggle)
-        
+
+
         let newFields = this.state.toggle ? this.state.oldFieldsShown : Object.keys(this.fieldMapping);
-        this.setState({oldFieldsShown: this.state.fieldsShown})
-        this.setState({fieldsShown: newFields}, this.plotClassInfo);
-        this.setState({toggle: !this.state.toggle});
+        this.setState({ oldFieldsShown: this.state.fieldsShown })
+        this.setState({ fieldsShown: newFields }, this.plotClassInfo);
+        this.setState({ toggle: !this.state.toggle });
     }
 
     plotClassInfo() {
         let class_data = this.updateSearch()
+
         let svg = d3.select("#class-info-plot")
             .append('svg')
             .attr('height', 500)
             .attr('width', 1000)
-        
+
         let list = d3.select('#class-info');
 
         // Update Table
@@ -147,15 +145,13 @@ export default class HomePage extends Component {
         let tableRows = tableBody.selectAll('tr')
             .data(class_data)
             .join('tr')
-        
-        console.log('FIELDS')
+
         let fields = this.state.fieldsShown;
-        console.log(fields)
 
         let tableRowEntries = tableRows.selectAll('td')
             .data((d) => {
                 let temp = [];
-                fields.forEach( ele => temp.push(d[ele]))
+                fields.forEach(ele => temp.push(d[ele]))
                 //return [d['Dept + Number'], d['Course_Name'], d['Professor_x'], d['Median Grade']]
                 return temp;
 
@@ -165,23 +161,15 @@ export default class HomePage extends Component {
 
         d3.select('#class-info-header-row').selectAll('th')
             //.data(['Course', 'Name', 'Professor', 'Median'])
-            .data(fields.map( d => this.fieldMapping[d]))
+            .data(fields.map(d => this.fieldMapping[d]))
             .join('th')
             .text(d => d)
-        
-        tableRows.selectAll('td.table-button')
-            .data(d => [d])
-            .attr('class', 'table-button')
-            .join('td')
-            .append('button')
-            .text((d) => 'Test')
-            .on('click', d => alert(d.srcElement.__data__['Number']))
+
     }
 
     updateSemester(semester) {
         // let semester = d3.select('#sem').property('value');
-        console.log('SEMESTER')
-        console.log(semester)
+
         if (semester === "FA22") {
             this.setState({ fullData: this.state.fallData });
         } else if (semester === "SP22") {
@@ -194,29 +182,25 @@ export default class HomePage extends Component {
     updateSearch() {
 
         let classes = this.state.fullData;
-        let fields = [];
+        let fields = ['Dept', 'Number', 'Course_Name', 'Professor_x'];
 
         let department = d3.select('#department-text').property('value');
         if (department !== '') {
             classes = classes.filter(class_ => class_['Dept'].toLowerCase().includes(department.toLowerCase()));
-            fields.push('Dept');
         }
         let prof = d3.select('#prof-text').property('value');
         if (prof !== '') {
             classes = classes.filter(class_ => class_['Professor_x'].toLowerCase().includes(prof.toLowerCase()));
-            fields.push('Professor_x')
         }
 
         let courseNum = Number(d3.select('#course-num-text').property('value'));
         if (courseNum !== 0) {
             classes = classes.filter(class_ => Number(class_['Number']) === courseNum);
-            fields.push('Number')
         }
 
         let courseName = d3.select('#course-name-text').property('value');
         if (courseName !== '') {
             classes = classes.filter(class_ => class_['Course_Name'].toLowerCase().includes(courseName.toLowerCase()));
-            fields.push('Course_Name')
         }
 
         let startTime = d3.select('#start-time-text').property('value');
@@ -238,7 +222,7 @@ export default class HomePage extends Component {
             classes = classes.filter(class_ => class_['Difficulty'] !== "" && (Number(class_['Difficulty']) <= val2 && Number(class_['Difficulty']) >= val1));
             fields.push('Difficulty')
         }
-        
+
         let classDifSlider = d3.select('#class-diff-slider')
         let val3 = this.state.sliderVal3;
         let val4 = this.state.sliderVal4;
@@ -270,24 +254,26 @@ export default class HomePage extends Component {
         }
 
         // Update the fields shown
-        this.setState({fieldsShown: fields});
+        let all_fields = ['Dept', 'Number', 'Course_Name', 'Professor_x', 'Median Grade', 'CU_Reviews_Rating', 'CU_Reviews_Difficulty', 'CU_Reviews_Workload', 'Difficulty', 'Start_Time', 'End_Time'];
+        this.setState({ fieldsShown: all_fields });
 
         classes.sort((d1, d2) => {
             return Number(d1['Number']) - Number(d2['Number']);
         });
 
-        console.log(classes);
         return classes
     }
 
     updateMedianGrade(e) {
         // list of all grades at the selected and above
-        this.setState({medianGrades: this.allGrades.slice(this.allGrades.indexOf(e.target.value))});
+        this.setState({ medianGrades: this.allGrades.slice(this.allGrades.indexOf(e.target.value)) });
     }
 
     componentDidMount() {
         this.createViz();
         d3.selectAll('.text-input').on('change', this.plotClassInfo)
+
+
 
         // d3.select('#sem').on('change', () => {
         //     console.log(d3.select('#sem').property('value'))
@@ -309,7 +295,7 @@ export default class HomePage extends Component {
         return (
             <div className="Home-Page App">
                 <br />
-                <h1>Class Visualizer</h1>
+                <h1 class="centered">Class Visualizer</h1>
 
                 <div>
                     <div class="row">
@@ -336,7 +322,7 @@ export default class HomePage extends Component {
                             <input class="text-input" id='course-num-text' type="text" placeholder="Ex: 1110"></input>
                             <br></br>
                         </div>
-                        
+
                         <div class="col">
                             <div>
                                 <label for="check-5">Course Name</label>
@@ -412,18 +398,19 @@ export default class HomePage extends Component {
                         </div>
                     </div>
 
-                    <div class="row">
+                    {/* <div class="row">
                         <div class="col">
-                        <label class="toggle-all-text">Toggle Information Displayed</label>
-                        <br></br>
-                        <ButtonGroup aria-label="Second group" onClick={this.toggleTableInfo}>
-                            <Button variant="secondary" value="Toggle">Toggle</Button>
-                        </ButtonGroup>
+                            <label class="toggle-all-text">Toggle Information Displayed</label>
+                            <br></br>
+                            <ButtonGroup aria-label="Second group" onClick={this.toggleTableInfo}>
+                                <Button variant="secondary" value="Toggle">Toggle</Button>
+                            </ButtonGroup>
                         </div>
-                    </div>
+                    </div> */}
 
                     <div class="row">
-                        <div class="col">
+                        <div id="centered" class="col">
+
                             <DropdownButton id="semester-dropdown" title="Semester" onSelect={this.updateSemester}>
                                 <Dropdown.Item eventKey="FA22">FA '22</Dropdown.Item>
                                 <Dropdown.Item eventKey="SP22">SP '22</Dropdown.Item>
