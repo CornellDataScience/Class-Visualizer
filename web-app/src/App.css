@@ -76,6 +76,7 @@ td {
 #end-time-text {
   border: 1px solid blue;
   transition: width 0.4s ease-in-out;
+  padding: 1px;
 }
 
 
@@ -91,19 +92,19 @@ td {
 #end-time-text:focus {
   background-color: lightblue;
   width: 60%;
-  padding: 10px;
 }
 
-.med-grade-text {
-  font-size: 24px;
-  text-align: center;
+.box-label {
+  margin-right: 6px;
 }
+
+
 
 .col {
   float: left;
   width: 20%;
   font-size: 24px;
-  padding: 15px;
+  padding: 10px;
 }
 
 .row {
@@ -119,6 +120,7 @@ td {
 #semester-dropdown {
   text-align: center;
 }
+
 
 
 /*
@@ -274,7 +276,12 @@ td {
   color: #999
 }
 
-/* #semester-dropdown {
-  z-index: -1;
+#semester-dropdown {
+  z-index: 10000000;
   position: relative;
-} */
+}
+
+.med-grade-text {
+  font-size: 24px;
+  text-align: center;
+}

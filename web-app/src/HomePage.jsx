@@ -248,7 +248,7 @@ export default class HomePage extends Component {
         }
 
         let medianGrades = this.state.medianGrades;
-        if (medianGrades.length !== 0) {
+        if (medianGrades.length !== 0 && medianGrades.length !== 6) {
             classes = classes.filter(class_ => medianGrades.includes(class_['Median Grade']));
             fields.push('Median Grade')
         }
@@ -266,12 +266,20 @@ export default class HomePage extends Component {
 
     updateMedianGrade(e) {
         // list of all grades at the selected and above
-        this.setState({ medianGrades: this.allGrades.slice(this.allGrades.indexOf(e.target.value)) });
+        if (e.target.value == "Any") {
+            this.setState({ medianGrades: this.allGrades });
+        } else {
+            this.setState({ medianGrades: this.allGrades.slice(this.allGrades.indexOf(e.target.value)) });
+        }
+        this.plotClassInfo();
     }
 
     componentDidMount() {
         this.createViz();
         d3.selectAll('.text-input').on('change', this.plotClassInfo)
+        d3.selectAll('.slider').on('change', this.plotClassInfo)
+
+
 
 
 
@@ -301,15 +309,15 @@ export default class HomePage extends Component {
                     <div class="row">
                         <div class="col">
                             <div>
-                                <label for="check-1">Department</label>
-                                <input class="text-input" id='department-text' type="text" placeholder="Enter Department..."></input>
+                                <label for="check-1" class="box-label">Department</label>
+                                <input class="text-input" id='department-text' type="text" placeholder="Enter Dept..."></input>
                                 <br></br>
                             </div>
                         </div>
 
                         <div class="col">
                             <div>
-                                <label for="check-2">Professor</label>
+                                <label for="check-2" class="box-label">Professor</label>
                                 <input class="text-input" id='prof-text' type="text" placeholder="Enter Prof Name..."></input>
                                 <br></br>
                             </div>
@@ -318,14 +326,14 @@ export default class HomePage extends Component {
 
                     <div class="row">
                         <div class="col">
-                            <label for="check-4">Course Number</label>
-                            <input class="text-input" id='course-num-text' type="text" placeholder="Ex: 1110"></input>
+                            <label for="check-4" class="box-label">Course Number</label>
+                            <input class="text-input" id='course-num-text' type="text" placeholder="Enter Course No."></input>
                             <br></br>
                         </div>
 
                         <div class="col">
                             <div>
-                                <label for="check-5">Course Name</label>
+                                <label for="check-5" class="box-label">Course Name</label>
                                 <input class="text-input" id='course-name-text' type="text" placeholder="Enter Course Name..."></input>
                                 <br></br>
                             </div>
@@ -335,14 +343,14 @@ export default class HomePage extends Component {
                     <div class="row">
                         <div class="col">
                             <div>
-                                <label for="check-10">Start Time</label>
+                                <label for="check-10" class="box-label">Start Time</label>
                                 <input class="text-input" id='start-time-text' type="text" placeholder="Enter start time..."></input>
                             </div>
                         </div>
 
                         <div class="col">
                             <div>
-                                <label for="check-11">End Time</label>
+                                <label for="check-11" class="box-label">End Time</label>
                                 <input class="text-input" id='end-time-text' type="text" placeholder="Enter end time..."></input>
                             </div>
                         </div>
@@ -351,8 +359,8 @@ export default class HomePage extends Component {
                     <div class="row my-0">
                         <div class="col my-0">
                             <div>
-                                <label for="check-6">Professor Difficulty</label>
-                                <BasicSlider id="prof-diff-slider" updateVal1={this.setSliderVal1} updateVal2={this.setSliderVal2} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                <label for="check-6" >Professor Difficulty</label>
+                                <BasicSlider id="prof-diff-slider" class="slider" updateVal1={this.setSliderVal1} updateVal2={this.setSliderVal2} minimum={1} maximum={5} time={false} ></BasicSlider>
                                 <br></br>
                             </div>
                         </div>
@@ -360,7 +368,7 @@ export default class HomePage extends Component {
                         <div class="col my-0">
                             <div>
                                 <label for="check-7">Class Difficulty</label>
-                                <BasicSlider id="class-diff-slider" updateVal1={this.setSliderVal3} updateVal2={this.setSliderVal4} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                <BasicSlider id="class-diff-slider" class="slider" updateVal1={this.setSliderVal3} updateVal2={this.setSliderVal4} minimum={1} maximum={5} time={false} ></BasicSlider>
                                 <br></br>
                             </div>
                         </div>
@@ -370,23 +378,24 @@ export default class HomePage extends Component {
                         <div class="col my-0">
                             <div>
                                 <label for="check-8">Class Rating</label>
-                                <BasicSlider id="class-rat-slider" updateVal1={this.setSliderVal5} updateVal2={this.setSliderVal6} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                <BasicSlider id="class-rat-slider" class="slider" updateVal1={this.setSliderVal5} updateVal2={this.setSliderVal6} minimum={1} maximum={5} time={false} ></BasicSlider>
                             </div>
                         </div>
 
                         <div class="col my-0">
                             <div>
                                 <label for="check-9">Class Workload</label>
-                                <BasicSlider id="class-work-slider" updateVal1={this.setSliderVal7} updateVal2={this.setSliderVal8} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                <BasicSlider id="class-work-slider" class="slider" updateVal1={this.setSliderVal7} updateVal2={this.setSliderVal8} minimum={1} maximum={5} time={false} ></BasicSlider>
                             </div>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col">
-                            <label class="med-grade-text">Median Grade</label>
+                            <label class="med-grade-text" id="centered">Median Grade</label>
                             <ButtonToolbar className="justify-content-center" aria-label="Toolbar with Button groups">
                                 <ButtonGroup aria-label="First group" onClick={this.updateMedianGrade}>
+                                    <Button variant="secondary" value="Any">Any</Button>{' '}
                                     <Button variant="secondary" value="A+">A+</Button>{' '}
                                     <Button variant="secondary" value="A">A</Button>{' '}
                                     <Button variant="secondary" value="A-">A-</Button>{' '}
