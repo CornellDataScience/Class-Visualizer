@@ -6,10 +6,10 @@ export const BasicSlider = (props) => {
 
   const sliderStyle = {  // Give the slider some width
     position: 'relative',
-    width: '30%',
+    width: '200%',
     height: 80,
     //border: '1px solid steelblue',
-    left: '150px'
+    left: '100px'
   }
 
   const railStyle = {

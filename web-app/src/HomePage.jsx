@@ -359,16 +359,28 @@ export default class HomePage extends Component {
                     <div class="row my-0">
                         <div class="col my-0">
                             <div>
-                                <label for="check-6" >Professor Difficulty</label>
-                                <BasicSlider id="prof-diff-slider" class="slider" updateVal1={this.setSliderVal1} updateVal2={this.setSliderVal2} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                <div class="subrow">
+                                    <div class="col">
+                                        <label for="check-6" >Professor Difficulty</label>
+                                    </div>
+                                    <div class="col">
+                                        <BasicSlider id="prof-diff-slider" class="slider" updateVal1={this.setSliderVal1} updateVal2={this.setSliderVal2} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                    </div>
+                                </div>
                                 <br></br>
                             </div>
                         </div>
 
                         <div class="col my-0">
                             <div>
-                                <label for="check-7">Class Difficulty</label>
-                                <BasicSlider id="class-diff-slider" class="slider" updateVal1={this.setSliderVal3} updateVal2={this.setSliderVal4} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                <div class="subrow">
+                                    <div class="col">
+                                        <label for="check-7">Class Difficulty</label>
+                                    </div>
+                                    <div class="col">
+                                        <BasicSlider id="class-diff-slider" class="slider" updateVal1={this.setSliderVal3} updateVal2={this.setSliderVal4} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                    </div>
+                                </div>
                                 <br></br>
                             </div>
                         </div>
@@ -377,22 +389,36 @@ export default class HomePage extends Component {
                     <div class="row my-0">
                         <div class="col my-0">
                             <div>
-                                <label for="check-8">Class Rating</label>
-                                <BasicSlider id="class-rat-slider" class="slider" updateVal1={this.setSliderVal5} updateVal2={this.setSliderVal6} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                <div class="subrow">
+                                    <div class="col">
+                                        <label for="check-8">Class Rating</label>
+                                    </div>
+                                    <div class="col">
+                                        <BasicSlider id="class-rat-slider" class="slider" updateVal1={this.setSliderVal5} updateVal2={this.setSliderVal6} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <div class="col my-0">
                             <div>
-                                <label for="check-9">Class Workload</label>
-                                <BasicSlider id="class-work-slider" class="slider" updateVal1={this.setSliderVal7} updateVal2={this.setSliderVal8} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                <div class="subrow">
+                                    <div class="col">
+                                        <label for="check-9">Class Workload</label>
+                                    </div>
+                                    <div class="col">
+                                        <BasicSlider id="class-work-slider" class="slider" updateVal1={this.setSliderVal7} updateVal2={this.setSliderVal8} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="row">
+                        <label class="med-grade-text" id="centered">Median Grade</label>
+                    </div>
+                    <div class="row">
                         <div class="col">
-                            <label class="med-grade-text" id="centered">Median Grade</label>
                             <ButtonToolbar className="justify-content-center" aria-label="Toolbar with Button groups">
                                 <ButtonGroup aria-label="First group" onClick={this.updateMedianGrade}>
                                     <Button variant="secondary" value="Any">Any</Button>{' '}

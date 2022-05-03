@@ -74,7 +74,7 @@ td {
 #class-work-text,
 #start-time-text,
 #end-time-text {
-  border: 1px solid blue;
+  border: 1px solid #2C4870;
   transition: width 0.4s ease-in-out;
   padding: 1px;
 }
@@ -104,13 +104,24 @@ td {
   float: left;
   width: 20%;
   font-size: 24px;
-  padding: 10px;
+  padding: 5px;
 }
 
 .row {
   padding: 0px 250px;
   height: auto;
   overflow: auto;
+}
+
+.subcol {
+  width: 100%;
+  float: inline-start;
+}
+
+.subrow {
+  height: auto;
+  overflow: auto;
+  width: 100%;
 }
 
 .text-input {
