@@ -284,4 +284,17 @@ td {
 .med-grade-text {
   font-size: 24px;
   text-align: center;
+
+}
+
+#class-info-table {
+  max-width: 80%;
+
+}
+
+#class-info-header {
+  column-gap: 100px;
+  padding: 10px;
+  background-color: lightgray;
+  text-align: center;
 }
