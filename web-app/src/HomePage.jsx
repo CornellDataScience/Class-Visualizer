@@ -38,7 +38,10 @@ export default class HomePage extends Component {
             medianGrades: [],
             fieldsShown: ['Dept', 'Number', 'Course_Name', 'Professor_x', 'Median Grade', 'CU_Reviews_Rating', 'CU_Reviews_Difficulty', 'CU_Reviews_Workload', 'Difficulty', 'Start_Time', 'End_Time'],
             oldFieldsShown: [],
-            toggle: false
+            toggle: false,
+            sortMethod: "dept",
+            semesterText: "FA 22",
+            sortByText: "Department"
         };
 
         this.allGrades = ['B-', 'B', 'B+', 'A-', 'A', 'A+'];
@@ -59,6 +62,7 @@ export default class HomePage extends Component {
         this.createViz = this.createViz.bind(this);
         this.updateSearch = this.updateSearch.bind(this);
         this.updateSemester = this.updateSemester.bind(this);
+        this.updateSortBy = this.updateSortBy.bind(this);
         this.plotClassInfo = this.plotClassInfo.bind(this);
         this.updateMedianGrade = this.updateMedianGrade.bind(this);
         this.toggleTableInfo = this.toggleTableInfo.bind(this);
@@ -171,12 +175,27 @@ export default class HomePage extends Component {
         // let semester = d3.select('#sem').property('value');
 
         if (semester === "FA22") {
-            this.setState({ fullData: this.state.fallData });
+            this.setState({ fullData: this.state.fallData, semesterText: "FA 22" });
         } else if (semester === "SP22") {
-            this.setState({ fullData: this.state.springData });
+            this.setState({ fullData: this.state.springData, semesterText: "SP 22" });
         }
 
-        this.plotClassInfo()
+        this.plotClassInfo();
+    }
+
+    updateSortBy(sortmethod) {
+        if (sortmethod == "dept") {
+            this.setState({ sortMethod: "dept", sortByText: "Department" });
+        } else if (sortmethod == "num") {
+            this.setState({ sortMethod: "num", sortByText: "Course Number" })
+        } else if (sortmethod == "work") {
+            this.setState({ sortMethod: "work", sortByText: "Workload" });
+        } else if (sortmethod == "diff") {
+            this.setState({ sortMethod: "diff", sortByText: "Prof Difficulty" });
+        } else if (sortmethod == "prof") {
+            this.setState({ sortMethod: "prof", sortByText: "Prof Difficulty" });
+        }
+        this.plotClassInfo();
     }
 
     updateSearch() {
@@ -258,9 +277,62 @@ export default class HomePage extends Component {
         this.setState({ fieldsShown: all_fields });
 
         classes.sort((d1, d2) => {
-            return Number(d1['Number']) - Number(d2['Number']);
+            console.log(this.state.sortMethod)
+            if (this.state.sortMethod == "num") {
+                return Number(d1['Number']) - Number(d2['Number']);
+            } else if (this.state.sortMethod == "dept") {
+                return d1['Dept'].localeCompare(d2['Dept'])
+            } else if (this.state.sortMethod == "rat") {
+                let d1w = d1['CU_Reviews_Rating'];
+                let d2w = d2['CU_Reviews_Rating'];
+                if (d1w !== "" && d2w !== "") {
+                    return Number(d1w) - Number(d2w);
+                } else if (d1w !== "") {
+                    return -1
+                } else if (d2w !== "") {
+                    return 1
+                } else {
+                    return 0
+                }
+            } else if (this.state.sortMethod == "diff") {
+                let d1w = d1['CU_Reviews_Difficulty'];
+                let d2w = d2['CU_Reviews_Difficulty'];
+                if (d1w !== "" && d2w !== "") {
+                    return Number(d1w) - Number(d2w);
+                } else if (d1w !== "") {
+                    return -1
+                } else if (d2w !== "") {
+                    return 1
+                } else {
+                    return 0
+                }
+            } else if (this.state.sortMethod == "work") {
+                let d1w = d1['CU_Reviews_Workload'];
+                let d2w = d2['CU_Reviews_Workload'];
+                if (d1w !== "" && d2w !== "") {
+                    return Number(d1w) - Number(d2w);
+                } else if (d1w !== "") {
+                    return -1
+                } else if (d2w !== "") {
+                    return 1
+                } else {
+                    return 0
+                }
+            } else if (this.state.sortMethod == "prof") {
+                let d1w = d1['Difficulty'];
+                let d2w = d2['Difficulty'];
+                if (d1w !== "" && d2w !== "") {
+                    return Number(d1w) - Number(d2w);
+                } else if (d1w !== "") {
+                    return -1
+                } else if (d2w !== "") {
+                    return 1
+                } else {
+                    return 0
+                }
+            }
         });
-
+        console.log(classes)
         return classes
     }
 
@@ -443,12 +515,28 @@ export default class HomePage extends Component {
                         </div>
                     </div> */}
 
-                    <div class="row">
-                        <div id="centered" class="col">
+                    <div class="row" id="dropdown-menus">
+                        <div class="col">
+                            <label>Semester</label>
 
-                            <DropdownButton id="semester-dropdown" title="Semester" onSelect={this.updateSemester}>
+                            <DropdownButton id="semester-dropdown" title={this.state.semesterText} onSelect={this.updateSemester}>
                                 <Dropdown.Item eventKey="FA22">FA '22</Dropdown.Item>
                                 <Dropdown.Item eventKey="SP22">SP '22</Dropdown.Item>
+                            </DropdownButton>
+                        </div>
+                        <div class="col">
+                            <label>Sort by</label>
+                            {/* </div>
+                        <div id="centered" class="col"> */}
+
+                            <DropdownButton id="sortby-dropdown" title={this.state.sortByText} onSelect={this.updateSortBy}>
+                                <Dropdown.Item eventKey="dept">Department</Dropdown.Item>
+                                <Dropdown.Item eventKey="num">Course Number</Dropdown.Item>
+                                <Dropdown.Item eventKey="rat">Rating</Dropdown.Item>
+                                <Dropdown.Item eventKey="work">Workload</Dropdown.Item>
+                                <Dropdown.Item eventKey="diff">Class Difficulty</Dropdown.Item>
+                                <Dropdown.Item eventKey="prof">Prof Difficulty</Dropdown.Item>
+
                             </DropdownButton>
                         </div>
                     </div>

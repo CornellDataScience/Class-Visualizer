@@ -300,7 +300,6 @@ td {
 
 #class-info-table {
   max-width: 80%;
-
 }
 
 #class-info-header {
@@ -308,4 +307,11 @@ td {
   padding: 10px;
   background-color: lightgray;
   text-align: center;
+}
+
+#dropdown-menus {
+  text-align: center;
+  align-content: center;
+  position: relative;
+  align-items: center;
 }
