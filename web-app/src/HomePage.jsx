@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
-import fullDataFileSP from './data/FullerData_CUReviews.csv';
-import fullDataFile from './data/FullerData_CUReviews_FA22.csv';
+import fullDataFileSP from './data/FullerData_CUReviews_shortened.csv';
+import fullDataFile from './data/FullerData_CUReviews_FA22_shortened.csv';
 import { BasicSlider } from './BasicSlider.jsx';
 import { Button, ButtonGroup, ButtonToolbar, Dropdown, DropdownButton } from 'react-bootstrap';
 import { CSVLink } from 'react-csv';
@@ -163,26 +163,26 @@ export default class HomePage extends Component {
             })
             .join('td')
             .text(d => d)
-        
+
         tableRows.selectAll('td.table-button')
-            .data( d => [d] )
+            .data(d => [d])
             .attr('class', 'table-button')
             .join('td')
-               .append('input')
-               .attr('type', 'checkbox')
-               .on('change', d => {
-                   let course = d.srcElement.__data__
-                   let currentCourses = this.state.savedClasses
-                   if ( currentCourses.includes(course) ) {
-                       // remove the class
-                       currentCourses.splice(currentCourses.indexOf(course), 1)
-                   } else {
-                       // add the class
-                       currentCourses.push(course)
-                   }
+            .append('input')
+            .attr('type', 'checkbox')
+            .on('change', d => {
+                let course = d.srcElement.__data__
+                let currentCourses = this.state.savedClasses
+                if (currentCourses.includes(course)) {
+                    // remove the class
+                    currentCourses.splice(currentCourses.indexOf(course), 1)
+                } else {
+                    // add the class
+                    currentCourses.push(course)
+                }
 
-                   this.setState( { savedClasses: currentCourses})
-               })
+                this.setState({ savedClasses: currentCourses })
+            })
 
         d3.select('#class-info-header-row').selectAll('th')
             .data(fields.map(d => this.fieldMapping[d]).concat(['Add Class']))
@@ -460,7 +460,7 @@ export default class HomePage extends Component {
                             </div>
                         </div>
                     </div>
-                    
+
                     <hr />
 
                     <div class="row my-0">
