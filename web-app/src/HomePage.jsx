@@ -4,6 +4,7 @@ import fullDataFileSP from './data/FullerData_CUReviews.csv';
 import fullDataFile from './data/FullerData_CUReviews_FA22.csv';
 import { BasicSlider } from './BasicSlider.jsx';
 import { Button, ButtonGroup, ButtonToolbar, Dropdown, DropdownButton } from 'react-bootstrap';
+import { CSVLink } from 'react-csv';
 
 // Department: Dept
 // Professor: Professor_x
@@ -41,7 +42,8 @@ export default class HomePage extends Component {
             toggle: false,
             sortMethod: "dept",
             semesterText: "FA '22",
-            sortByText: "Department"
+            sortByText: "Department",
+            savedClasses: []
         };
 
         this.allGrades = ['B-', 'B', 'B+', 'A-', 'A', 'A+'];
@@ -134,7 +136,6 @@ export default class HomePage extends Component {
     }
 
     plotClassInfo() {
-        console.log('IN PLOT CLASS INFO');
         let class_data = this.updateSearch()
 
         let svg = d3.select("#class-info-plot")
@@ -157,19 +158,36 @@ export default class HomePage extends Component {
             .data((d) => {
                 let temp = [];
                 fields.forEach(ele => temp.push(d[ele]))
-                //return [d['Dept + Number'], d['Course_Name'], d['Professor_x'], d['Median Grade']]
                 return temp;
 
             })
             .join('td')
             .text(d => d)
+        
+        tableRows.selectAll('td.table-button')
+            .data( d => [d] )
+            .attr('class', 'table-button')
+            .join('td')
+               .append('input')
+               .attr('type', 'checkbox')
+               .on('change', d => {
+                   let course = d.srcElement.__data__
+                   let currentCourses = this.state.savedClasses
+                   if ( currentCourses.includes(course) ) {
+                       // remove the class
+                       currentCourses.splice(currentCourses.indexOf(course), 1)
+                   } else {
+                       // add the class
+                       currentCourses.push(course)
+                   }
+
+                   this.setState( { savedClasses: currentCourses})
+               })
 
         d3.select('#class-info-header-row').selectAll('th')
-            //.data(['Course', 'Name', 'Professor', 'Median'])
-            .data(fields.map(d => this.fieldMapping[d]))
+            .data(fields.map(d => this.fieldMapping[d]).concat(['Add Class']))
             .join('th')
             .text(d => d)
-
     }
 
     updateSemester() {
@@ -380,6 +398,13 @@ export default class HomePage extends Component {
         } else {
             list = <ul id='class-info'></ul>;
         }
+
+        let csvFile = {
+            data: this.state.savedClasses,
+            // headers: headers,
+            filename: 'Test.csv'
+        }
+
         return (
             <div className="Home-Page App">
                 <br />
@@ -424,17 +449,19 @@ export default class HomePage extends Component {
                         <div class="col">
                             <div>
                                 <label for="check-10" class="box-label">Start Time</label>
-                                <input class="text-input" id='start-time-text' type="text" placeholder="Enter start time..."></input>
+                                <input class="text-input" id='start-time-text' type="text" placeholder="Enter Start Time..."></input>
                             </div>
                         </div>
 
                         <div class="col">
                             <div>
                                 <label for="check-11" class="box-label">End Time</label>
-                                <input class="text-input" id='end-time-text' type="text" placeholder="Enter end time..."></input>
+                                <input class="text-input" id='end-time-text' type="text" placeholder="Enter End Time..."></input>
                             </div>
                         </div>
                     </div>
+                    
+                    <hr />
 
                     <div class="row my-0">
                         <div class="col my-0">
@@ -513,18 +540,7 @@ export default class HomePage extends Component {
                         </div>
                     </div>
 
-                    {/* <div class="row">
-                        <div class="col">
-                            <label class="toggle-all-text">Toggle Information Displayed</label>
-                            <br></br>
-                            <ButtonGroup aria-label="Second group" onClick={this.toggleTableInfo}>
-                                <Button variant="secondary" value="Toggle">Toggle</Button>
-                            </ButtonGroup>
-                        </div>
-                    </div> */}
-
-
-
+                    <hr />
 
                     <div class="row" id="dropdown-menus">
                         <div class="col">
@@ -550,10 +566,14 @@ export default class HomePage extends Component {
                             </select>
                         </div>
                     </div>
-
                 </div>
 
+                <hr />
+
                 <br />
+
+                {/* TODO: ADD HEADERS IF NEEDED (headers={variable}) */}
+                <CSVLink data={this.state.savedClasses} filename={'Saved_Classes.csv'}>Export to CSV</CSVLink>
 
                 <div id="selected-class-info"></div>
                 <div style={{ align: "center" }}>
@@ -570,10 +590,7 @@ export default class HomePage extends Component {
                     <div id="class-info-plot"></div>
 
                 </div>
-
-
-
-            </div >
+            </div>
         )
     }
 }
