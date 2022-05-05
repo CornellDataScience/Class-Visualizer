@@ -40,7 +40,7 @@ export default class HomePage extends Component {
             oldFieldsShown: [],
             toggle: false,
             sortMethod: "dept",
-            semesterText: "FA 22",
+            semesterText: "FA '22",
             sortByText: "Department"
         };
 
@@ -171,31 +171,39 @@ export default class HomePage extends Component {
 
     }
 
-    updateSemester(semester) {
+    updateSemester() {
         // let semester = d3.select('#sem').property('value');
+        let itm = document.getElementById("semester-dropdown");
+        let semester = itm.options[itm.selectedIndex].text;
 
-        if (semester === "FA22") {
-            this.setState({ fullData: this.state.fallData, semesterText: "FA 22" });
-        } else if (semester === "SP22") {
-            this.setState({ fullData: this.state.springData, semesterText: "SP 22" });
+        if (semester === "FA '22") {
+            this.setState({ fullData: this.state.fallData, semesterText: "FA '22" }, this.plotClassInfo);
+        } else if (semester === "SP '22") {
+            this.setState({ fullData: this.state.springData, semesterText: "SP '22" }, this.plotClassInfo);
         }
 
-        this.plotClassInfo();
+        // this.plotClassInfo();
     }
 
-    updateSortBy(sortmethod) {
-        if (sortmethod == "dept") {
-            this.setState({ sortMethod: "dept", sortByText: "Department" });
-        } else if (sortmethod == "num") {
-            this.setState({ sortMethod: "num", sortByText: "Course Number" })
-        } else if (sortmethod == "work") {
-            this.setState({ sortMethod: "work", sortByText: "Workload" });
-        } else if (sortmethod == "diff") {
-            this.setState({ sortMethod: "diff", sortByText: "Prof Difficulty" });
-        } else if (sortmethod == "prof") {
-            this.setState({ sortMethod: "prof", sortByText: "Prof Difficulty" });
-        }
-        this.plotClassInfo();
+    updateSortBy() {
+        let itm = document.getElementById("sortby-dropdown");
+        let sortmethod = itm.options[itm.selectedIndex].text;
+        this.setState({ sortMethod: sortmethod, sortByText: sortmethod }, this.plotClassInfo);
+        // if (sortmethod == "Department") {
+        //     this.setState({ sortMethod: "dept", sortByText: "Department" });
+        // } else if (sortmethod == "Course Number") {
+        //     this.setState({ sortMethod: "num", sortByText: "Course Number" })
+        // } else if (sortmethod == "Workload") {
+        //     this.setState({ sortMethod: "work", sortByText: "Workload" });
+        // } else if (sortmethod == "Class Difficulty") {
+        //     this.setState({ sortMethod: "diff", sortByText: "Prof Difficulty" });
+        // } else if (sortmethod == "Prof Difficulty") {
+        //     this.setState({ sortMethod: "prof", sortByText: "Prof Difficulty" });
+        // } else if (sortmethod == "Rating") {
+        //     this.setState({ sortMethod: "rat", sortByText: "Rating" });
+
+        //}
+        // this.plotClassInfo();
     }
 
     updateSearch() {
@@ -277,12 +285,11 @@ export default class HomePage extends Component {
         this.setState({ fieldsShown: all_fields });
 
         classes.sort((d1, d2) => {
-            console.log(this.state.sortMethod)
-            if (this.state.sortMethod == "num") {
+            if (this.state.sortMethod == "Course Number") {
                 return Number(d1['Number']) - Number(d2['Number']);
-            } else if (this.state.sortMethod == "dept") {
+            } else if (this.state.sortMethod == "Department") {
                 return d1['Dept'].localeCompare(d2['Dept'])
-            } else if (this.state.sortMethod == "rat") {
+            } else if (this.state.sortMethod == "Rating") {
                 let d1w = d1['CU_Reviews_Rating'];
                 let d2w = d2['CU_Reviews_Rating'];
                 if (d1w !== "" && d2w !== "") {
@@ -294,7 +301,7 @@ export default class HomePage extends Component {
                 } else {
                     return 0
                 }
-            } else if (this.state.sortMethod == "diff") {
+            } else if (this.state.sortMethod == "Class Difficulty") {
                 let d1w = d1['CU_Reviews_Difficulty'];
                 let d2w = d2['CU_Reviews_Difficulty'];
                 if (d1w !== "" && d2w !== "") {
@@ -306,7 +313,7 @@ export default class HomePage extends Component {
                 } else {
                     return 0
                 }
-            } else if (this.state.sortMethod == "work") {
+            } else if (this.state.sortMethod == "Workload") {
                 let d1w = d1['CU_Reviews_Workload'];
                 let d2w = d2['CU_Reviews_Workload'];
                 if (d1w !== "" && d2w !== "") {
@@ -318,7 +325,7 @@ export default class HomePage extends Component {
                 } else {
                     return 0
                 }
-            } else if (this.state.sortMethod == "prof") {
+            } else if (this.state.sortMethod == "Prof Difficulty") {
                 let d1w = d1['Difficulty'];
                 let d2w = d2['Difficulty'];
                 if (d1w !== "" && d2w !== "") {
@@ -332,7 +339,6 @@ export default class HomePage extends Component {
                 }
             }
         });
-        console.log(classes)
         return classes
     }
 
@@ -515,29 +521,31 @@ export default class HomePage extends Component {
                         </div>
                     </div> */}
 
+
+
+
                     <div class="row" id="dropdown-menus">
                         <div class="col">
                             <label>Semester</label>
-
-                            <DropdownButton id="semester-dropdown" title={this.state.semesterText} onSelect={this.updateSemester}>
-                                <Dropdown.Item eventKey="FA22">FA '22</Dropdown.Item>
-                                <Dropdown.Item eventKey="SP22">SP '22</Dropdown.Item>
-                            </DropdownButton>
+                            <br></br>
+                            <select id="semester-dropdown" title={this.state.semesterText} onChange={this.updateSemester}>
+                                <option value="FA '22">FA '22</option>
+                                <option value="SP '22">SP '22</option>
+                            </select>
                         </div>
                         <div class="col">
                             <label>Sort by</label>
-                            {/* </div>
-                        <div id="centered" class="col"> */}
+                            <br></br>
 
-                            <DropdownButton id="sortby-dropdown" title={this.state.sortByText} onSelect={this.updateSortBy}>
-                                <Dropdown.Item eventKey="dept">Department</Dropdown.Item>
-                                <Dropdown.Item eventKey="num">Course Number</Dropdown.Item>
-                                <Dropdown.Item eventKey="rat">Rating</Dropdown.Item>
-                                <Dropdown.Item eventKey="work">Workload</Dropdown.Item>
-                                <Dropdown.Item eventKey="diff">Class Difficulty</Dropdown.Item>
-                                <Dropdown.Item eventKey="prof">Prof Difficulty</Dropdown.Item>
+                            <select id="sortby-dropdown" title={this.state.sortByText} onChange={this.updateSortBy}>
+                                <option value="Department">Department</option>
+                                <option value="Course Number">Course Number</option>
+                                <option value="Rating">Rating</option>
+                                <option value="Workload">Workload</option>
+                                <option value="Class Difficulty">Class Difficulty</option>
+                                <option value="Prof Difficulty">Prof Difficulty</option>
 
-                            </DropdownButton>
+                            </select>
                         </div>
                     </div>
                 </div>
