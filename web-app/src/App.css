@@ -1,5 +1,6 @@
 .App {
   text-align: left;
+  /* background-color: #2852d1; */
 }
 
 .centered {
@@ -55,7 +56,7 @@ table,
 th,
 td {
   border: 1px solid black;
-  text-align: left;
+  text-align: center;
 }
 
 .check-med {
@@ -91,7 +92,7 @@ td {
 #start-time-text:focus,
 #end-time-text:focus {
   background-color: lightblue;
-  width: 60%;
+  width: 55%;
 }
 
 .box-label {
@@ -311,7 +312,7 @@ td {
 
 #dropdown-menus {
   text-align: center;
-  align-content: center;
-  position: relative;
-  align-items: center;
+  /* align-content: center; */
+  /* position: relative; */
+  /* align-items: center; */
 }

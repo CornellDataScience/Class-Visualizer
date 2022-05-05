@@ -134,6 +134,7 @@ export default class HomePage extends Component {
     }
 
     plotClassInfo() {
+        console.log('IN PLOT CLASS INFO');
         let class_data = this.updateSearch()
 
         let svg = d3.select("#class-info-plot")
@@ -277,10 +278,10 @@ export default class HomePage extends Component {
         this.setState({ fieldsShown: all_fields });
 
         classes.sort((d1, d2) => {
-            console.log(this.state.sortMethod)
+            //console.log(this.state.sortMethod)
             if (this.state.sortMethod == "num") {
                 return Number(d1['Number']) - Number(d2['Number']);
-            } else if (this.state.sortMethod == "dept") {
+            } else if (this.state.sortMethod === "dept") {
                 return d1['Dept'].localeCompare(d2['Dept'])
             } else if (this.state.sortMethod == "rat") {
                 let d1w = d1['CU_Reviews_Rating'];
@@ -294,7 +295,7 @@ export default class HomePage extends Component {
                 } else {
                     return 0
                 }
-            } else if (this.state.sortMethod == "diff") {
+            } else if (this.state.sortMethod === "diff") {
                 let d1w = d1['CU_Reviews_Difficulty'];
                 let d2w = d2['CU_Reviews_Difficulty'];
                 if (d1w !== "" && d2w !== "") {
@@ -306,7 +307,7 @@ export default class HomePage extends Component {
                 } else {
                     return 0
                 }
-            } else if (this.state.sortMethod == "work") {
+            } else if (this.state.sortMethod === "work") {
                 let d1w = d1['CU_Reviews_Workload'];
                 let d2w = d2['CU_Reviews_Workload'];
                 if (d1w !== "" && d2w !== "") {
@@ -318,7 +319,7 @@ export default class HomePage extends Component {
                 } else {
                     return 0
                 }
-            } else if (this.state.sortMethod == "prof") {
+            } else if (this.state.sortMethod === "prof") {
                 let d1w = d1['Difficulty'];
                 let d2w = d2['Difficulty'];
                 if (d1w !== "" && d2w !== "") {
@@ -338,7 +339,7 @@ export default class HomePage extends Component {
 
     updateMedianGrade(e) {
         // list of all grades at the selected and above
-        if (e.target.value == "Any") {
+        if (e.target.value === "Any") {
             this.setState({ medianGrades: this.allGrades });
         } else {
             this.setState({ medianGrades: this.allGrades.slice(this.allGrades.indexOf(e.target.value)) });
@@ -436,7 +437,7 @@ export default class HomePage extends Component {
                                         <label for="check-6" >Professor Difficulty</label>
                                     </div>
                                     <div class="col">
-                                        <BasicSlider id="prof-diff-slider" class="slider" updateVal1={this.setSliderVal1} updateVal2={this.setSliderVal2} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                        <BasicSlider id="prof-diff-slider" class="slider" changeFunc={this.plotClassInfo} updateVal1={this.setSliderVal1} updateVal2={this.setSliderVal2} minimum={1} maximum={5} time={false} ></BasicSlider>
                                     </div>
                                 </div>
                                 <br></br>
@@ -450,7 +451,7 @@ export default class HomePage extends Component {
                                         <label for="check-7">Class Difficulty</label>
                                     </div>
                                     <div class="col">
-                                        <BasicSlider id="class-diff-slider" class="slider" updateVal1={this.setSliderVal3} updateVal2={this.setSliderVal4} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                        <BasicSlider id="class-diff-slider" class="slider" changeFunc={this.plotClassInfo} updateVal1={this.setSliderVal3} updateVal2={this.setSliderVal4} minimum={1} maximum={5} time={false} ></BasicSlider>
                                     </div>
                                 </div>
                                 <br></br>
@@ -466,7 +467,7 @@ export default class HomePage extends Component {
                                         <label for="check-8">Class Rating</label>
                                     </div>
                                     <div class="col">
-                                        <BasicSlider id="class-rat-slider" class="slider" updateVal1={this.setSliderVal5} updateVal2={this.setSliderVal6} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                        <BasicSlider id="class-rat-slider" class="slider" changeFunc={this.plotClassInfo} updateVal1={this.setSliderVal5} updateVal2={this.setSliderVal6} minimum={1} maximum={5} time={false} ></BasicSlider>
                                     </div>
                                 </div>
                             </div>
@@ -479,7 +480,7 @@ export default class HomePage extends Component {
                                         <label for="check-9">Class Workload</label>
                                     </div>
                                     <div class="col">
-                                        <BasicSlider id="class-work-slider" class="slider" updateVal1={this.setSliderVal7} updateVal2={this.setSliderVal8} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                        <BasicSlider id="class-work-slider" class="slider" changeFunc={this.plotClassInfo} updateVal1={this.setSliderVal7} updateVal2={this.setSliderVal8} minimum={1} maximum={5} time={false} ></BasicSlider>
                                     </div>
                                 </div>
                             </div>
@@ -519,15 +520,15 @@ export default class HomePage extends Component {
                         <div class="col">
                             <label>Semester</label>
 
-                            <DropdownButton id="semester-dropdown" title={this.state.semesterText} onSelect={this.updateSemester}>
+                            <DropdownButton id="semester-dropdown" title={this.state.semesterText} onSelect={this.updateSemester} open={true}>
                                 <Dropdown.Item eventKey="FA22">FA '22</Dropdown.Item>
                                 <Dropdown.Item eventKey="SP22">SP '22</Dropdown.Item>
                             </DropdownButton>
+                            <br />
+                            <br />
                         </div>
                         <div class="col">
                             <label>Sort by</label>
-                            {/* </div>
-                        <div id="centered" class="col"> */}
 
                             <DropdownButton id="sortby-dropdown" title={this.state.sortByText} onSelect={this.updateSortBy}>
                                 <Dropdown.Item eventKey="dept">Department</Dropdown.Item>
@@ -536,10 +537,12 @@ export default class HomePage extends Component {
                                 <Dropdown.Item eventKey="work">Workload</Dropdown.Item>
                                 <Dropdown.Item eventKey="diff">Class Difficulty</Dropdown.Item>
                                 <Dropdown.Item eventKey="prof">Prof Difficulty</Dropdown.Item>
-
                             </DropdownButton>
+                            <br />
+                            <br />
                         </div>
                     </div>
+
                 </div>
 
                 <br />

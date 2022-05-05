@@ -44,6 +44,7 @@ export const BasicSlider = (props) => {
         step={1}
         mode={2}
         values={[props.minimum, props.maximum]}
+        onChange={props.changeFunc}
       >
         <div style={railStyle} />
         <Handles>
