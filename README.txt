@@ -21,6 +21,11 @@ CU_Reviews_Scraping.ipynb
 - Code for scraping from CU Reviews
 investigation.ipynb
 - code for figuring out whats up with the missing classes. Updated Class-Visualizer.ipynb to handle almost all missing cases. 
+data_cleaning.ipynb
+ - code for rounding columns to ints / 2 sig fig floats
+data_cleaning2, data_cleaning22.ipynb
+ - code for removing extraneous columns (22 was used)
+ - produced FullerData_CUReviews_FA22_shortened.csv, FullerData_CUReviews_shortened.csv
 
 WHEN WE UPDATE FOR NEW SEMESTER
 1) Download updated median grade spreadsheet and replace with Cornell_Median_Grades.csv 
