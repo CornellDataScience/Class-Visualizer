@@ -365,11 +365,11 @@ export default class HomePage extends Component {
     updateMedianGrade(e) {
         // list of all grades at the selected and above
         if (e.target.value === "Any") {
-            this.setState({ medianGrades: this.allGrades });
+            this.setState({ medianGrades: this.allGrades }, this.plotClassInfo);
         } else {
-            this.setState({ medianGrades: this.allGrades.slice(this.allGrades.indexOf(e.target.value)) });
+            this.setState({ medianGrades: this.allGrades.slice(this.allGrades.indexOf(e.target.value)) }, this.plotClassInfo);
         }
-        this.plotClassInfo();
+        //this.plotClassInfo();
     }
 
     componentDidMount() {
