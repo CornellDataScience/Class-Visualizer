@@ -27,7 +27,7 @@ export default class HomePage extends Component {
             fullData: [],
             fallData: [],
             springData: [],
-            selectedClasses: ['Dept + Number', 'Course_Name', 'Professor_x'],
+            selectedClasses: ['Dept + Number', 'Course_Name', 'Professor'],
             sliderVal1: 0,
             sliderVal2: 0,
             sliderVal3: 0,
@@ -37,19 +37,21 @@ export default class HomePage extends Component {
             sliderVal7: 0,
             sliderVal8: 0,
             medianGrades: [],
-            fieldsShown: ['Dept', 'Number', 'Course_Name', 'Professor_x', 'Median Grade', 'CU_Reviews_Rating', 'CU_Reviews_Difficulty', 'CU_Reviews_Workload', 'Difficulty', 'Start_Time', 'End_Time'],
+            fieldsShown: ['Dept', 'Number', 'Course_Name', 'Professor', 'Median Grade', 'CU_Reviews_Rating', 'CU_Reviews_Difficulty', 'CU_Reviews_Workload', 'Difficulty', 'Start_Time', 'End_Time'],
             oldFieldsShown: [],
             toggle: false,
             sortMethod: "dept",
             semesterText: "FA '22",
             sortByText: "Department",
-            savedClasses: []
+            savedClasses: [],
+            headers: [  'Department', 'Course Number', 'Course Name', 'Professor', 'Median Grade', 'Class Rating',
+            'Class Difficulty', 'Class Workload', 'Professor Difficulty', 'Start Time', 'End Time'  ]
         };
 
         this.allGrades = ['B-', 'B', 'B+', 'A-', 'A', 'A+'];
         this.fieldMapping = {
             'Dept': 'Department',
-            'Professor_x': 'Professor',
+            'Professor': 'Professor',
             'Number': 'Course Number',
             'Course_Name': 'Course Name',
             'Start_Time': 'Start Time',
@@ -59,6 +61,10 @@ export default class HomePage extends Component {
             'CU_Reviews_Rating': 'Class Rating',
             'CU_Reviews_Workload': 'Class Workload',
             'Median Grade': 'Median Grade'
+        }
+
+        this.medGradeMapping = {
+            "A+" : 10, "A" : 9,"A-" : 8, "B+" : 7, "B" : 6, "B-" : 5
         }
 
         this.createViz = this.createViz.bind(this);
@@ -137,6 +143,7 @@ export default class HomePage extends Component {
 
     plotClassInfo() {
         let class_data = this.updateSearch()
+        console.log(class_data);
 
         let svg = d3.select("#class-info-plot")
             .append('svg')
@@ -145,12 +152,15 @@ export default class HomePage extends Component {
 
         let list = d3.select('#class-info');
 
+        let colors = ['white', 'lightgray']
+
         // Update Table
         let tableBody = d3.select('#class-info-table tbody');
         let tableHeader = d3.select('#class-info-header');
         let tableRows = tableBody.selectAll('tr')
             .data(class_data)
             .join('tr')
+            .style('background-color', d => colors[class_data.indexOf(d) % 2])
 
         let fields = this.state.fieldsShown;
 
@@ -172,13 +182,28 @@ export default class HomePage extends Component {
             .attr('type', 'checkbox')
             .on('change', d => {
                 let course = d.srcElement.__data__
+                
+                let savedData = {
+                                    'Department': course['Dept'],
+                                    'Course Number': course['Num'],
+                                    'Course Name': course['Course_Name'],
+                                    'Professor': course['Professor'],
+                                    'Median Grade': course['Median Grade'],
+                                    'Class Rating': course['CU_Reviews_Rating'],
+                                    'Class Difficulty': course['CU_Reviews_Difficulty'],
+                                    'Class Workload': course['CU_Reviews_Workload'],
+                                    'Professor Difficulty': course['Difficulty'],
+                                    'Start Time': course['Start_Time'],
+                                    'End Time': course['End_Time']
+                                }
+
                 let currentCourses = this.state.savedClasses
-                if (currentCourses.includes(course)) {
+                if (currentCourses.includes(savedData)) {
                     // remove the class
-                    currentCourses.splice(currentCourses.indexOf(course), 1)
+                    currentCourses.splice(currentCourses.indexOf(savedData), 1)
                 } else {
                     // add the class
-                    currentCourses.push(course)
+                    currentCourses.push(savedData)
                 }
 
                 this.setState({ savedClasses: currentCourses })
@@ -208,27 +233,12 @@ export default class HomePage extends Component {
         let itm = document.getElementById("sortby-dropdown");
         let sortmethod = itm.options[itm.selectedIndex].text;
         this.setState({ sortMethod: sortmethod, sortByText: sortmethod }, this.plotClassInfo);
-        // if (sortmethod == "Department") {
-        //     this.setState({ sortMethod: "dept", sortByText: "Department" });
-        // } else if (sortmethod == "Course Number") {
-        //     this.setState({ sortMethod: "num", sortByText: "Course Number" })
-        // } else if (sortmethod == "Workload") {
-        //     this.setState({ sortMethod: "work", sortByText: "Workload" });
-        // } else if (sortmethod == "Class Difficulty") {
-        //     this.setState({ sortMethod: "diff", sortByText: "Prof Difficulty" });
-        // } else if (sortmethod == "Prof Difficulty") {
-        //     this.setState({ sortMethod: "prof", sortByText: "Prof Difficulty" });
-        // } else if (sortmethod == "Rating") {
-        //     this.setState({ sortMethod: "rat", sortByText: "Rating" });
-
-        //}
-        // this.plotClassInfo();
     }
 
     updateSearch() {
 
         let classes = this.state.fullData;
-        let fields = ['Dept', 'Number', 'Course_Name', 'Professor_x'];
+        let fields = ['Dept', 'Number', 'Course_Name', 'Professor'];
 
         let department = d3.select('#department-text').property('value');
         if (department !== '') {
@@ -236,7 +246,7 @@ export default class HomePage extends Component {
         }
         let prof = d3.select('#prof-text').property('value');
         if (prof !== '') {
-            classes = classes.filter(class_ => class_['Professor_x'].toLowerCase().includes(prof.toLowerCase()));
+            classes = classes.filter(class_ => class_['Professor'].toLowerCase().includes(prof.toLowerCase()));
         }
 
         let courseNum = Number(d3.select('#course-num-text').property('value'));
@@ -300,7 +310,7 @@ export default class HomePage extends Component {
         }
 
         // Update the fields shown
-        let all_fields = ['Dept', 'Number', 'Course_Name', 'Professor_x', 'Median Grade', 'CU_Reviews_Rating', 'CU_Reviews_Difficulty', 'CU_Reviews_Workload', 'Difficulty', 'Start_Time', 'End_Time'];
+        let all_fields = ['Dept', 'Number', 'Course_Name', 'Professor', 'Median Grade', 'CU_Reviews_Rating', 'CU_Reviews_Difficulty', 'CU_Reviews_Workload', 'Difficulty', 'Start_Time', 'End_Time'];
         this.setState({ fieldsShown: all_fields });
 
         classes.sort((d1, d2) => {
@@ -321,7 +331,7 @@ export default class HomePage extends Component {
                 } else {
                     return 0
                 }
-            } else if (this.state.sortMethod == "Class Difficulty") {
+            } else if (this.state.sortMethod === "Class Difficulty") {
                 let d1w = d1['CU_Reviews_Difficulty'];
                 let d2w = d2['CU_Reviews_Difficulty'];
                 if (d1w !== "" && d2w !== "") {
@@ -333,7 +343,7 @@ export default class HomePage extends Component {
                 } else {
                     return 0
                 }
-            } else if (this.state.sortMethod == "Workload") {
+            } else if (this.state.sortMethod === "Workload") {
                 let d1w = d1['CU_Reviews_Workload'];
                 let d2w = d2['CU_Reviews_Workload'];
                 if (d1w !== "" && d2w !== "") {
@@ -345,7 +355,7 @@ export default class HomePage extends Component {
                 } else {
                     return 0
                 }
-            } else if (this.state.sortMethod == "Prof Difficulty") {
+            } else if (this.state.sortMethod === "Prof Difficulty") {
                 let d1w = d1['Difficulty'];
                 let d2w = d2['Difficulty'];
                 if (d1w !== "" && d2w !== "") {
@@ -357,6 +367,19 @@ export default class HomePage extends Component {
                 } else {
                     return 0
                 }
+            } else if (this.state.sortMethod === "Median Grade") {
+                let d1w = d1['Median Grade'];
+                let d2w = d2['Median Grade'];
+                if (d1w !== "" && d2w !== "") {
+                    return  this.medGradeMapping[d2w] - this.medGradeMapping[d1w]
+                } else if (d1w !== "") {
+                    return -1
+                } else if (d2w !=="") {
+                    return 1
+                } else {
+                    return 0
+                }
+
             }
         });
         return classes
@@ -397,12 +420,6 @@ export default class HomePage extends Component {
             list = <ul id='class-info'>Class Info</ul>;
         } else {
             list = <ul id='class-info'></ul>;
-        }
-
-        let csvFile = {
-            data: this.state.savedClasses,
-            // headers: headers,
-            filename: 'Test.csv'
         }
 
         return (
@@ -562,7 +579,7 @@ export default class HomePage extends Component {
                                 <option value="Workload">Workload</option>
                                 <option value="Class Difficulty">Class Difficulty</option>
                                 <option value="Prof Difficulty">Prof Difficulty</option>
-
+                                <option value="Median Grade">Median Grade</option>
                             </select>
                         </div>
                     </div>
@@ -572,9 +589,12 @@ export default class HomePage extends Component {
 
                 <br />
 
-                {/* TODO: ADD HEADERS IF NEEDED (headers={variable}) */}
-                <CSVLink data={this.state.savedClasses} filename={'Saved_Classes.csv'}>Export to CSV</CSVLink>
-
+                <div>
+                <div class="row">
+                    <CSVLink data={this.state.savedClasses} id="export-button" headers={this.state.headers} filename={'Saved_Classes.csv'}>Export to CSV</CSVLink>
+                    
+                    </div>
+                    </div>
                 <div id="selected-class-info"></div>
                 <div style={{ align: "center" }}>
                     <br></br>

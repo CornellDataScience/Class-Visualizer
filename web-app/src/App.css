@@ -57,6 +57,7 @@ th,
 td {
   border: 1px solid black;
   text-align: center;
+  padding: 5px;
 }
 
 .check-med {
@@ -289,7 +290,8 @@ td {
 }
 
 #semester-dropdown,
-#sortby-dropdown {
+#sortby-dropdown,
+#export-button {
   z-index: 10000000;
   position: relative;
   color: white;
@@ -315,7 +317,7 @@ td {
 #class-info-header {
   column-gap: 100px;
   padding: 10px;
-  background-color: lightgray;
+  background-color: #6c757d;;
   text-align: center;
 }
 
@@ -325,3 +327,4 @@ td {
   /* position: relative; */
   /* align-items: center; */
 }
+
