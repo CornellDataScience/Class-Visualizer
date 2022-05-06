@@ -1,6 +1,7 @@
 .App {
   text-align: left;
   /* background-color: #2852d1; */
+  background: linear-gradient(90deg, rgb(190, 187, 247) 0%, rgb(253, 253, 253) 100%);
 }
 
 .centered {
@@ -81,6 +82,9 @@ td {
   padding: 1px;
 }
 
+#prof-text {
+  margin-left: 16px;
+}
 
 #department-text:focus,
 #prof-text:focus,
@@ -93,11 +97,13 @@ td {
 #start-time-text:focus,
 #end-time-text:focus {
   background-color: lightblue;
-  width: 55%;
+  width: 125px;
 }
 
 .box-label {
   margin-right: 6px;
+  font-size: 15px;
+  
 }
 
 
@@ -106,13 +112,17 @@ td {
   float: left;
   width: 20%;
   font-size: 18px;
-  padding: 5px;
+  padding: 0px;
+  white-space: nowrap;
 }
 
 .row {
   padding: 0px 250px;
   height: auto;
-  overflow: auto;
+}
+
+.text-row {
+  padding: 5px 250px;
 }
 
 .subcol {
@@ -127,7 +137,9 @@ td {
 }
 
 .text-input {
-  width: 200px;
+  width: 100px;
+  font-size: 15px;
+  padding: 8px;
 }
 
 #semester-dropdown {
@@ -359,6 +371,21 @@ td {
   top: -50px;
 }
 
+.extra3 {
+  position: relative;
+  top: -75px;
+}
+
+.extra4 {
+  position: relative;
+  top: -175px;
+}
+
+.extra5 {
+  position: relative;
+  top: -190px;
+}
+
 .logo {
   height: 75px;
   position: relative;
@@ -366,7 +393,6 @@ td {
   left: 50px;
 }
 
-.extra3 {
-  position: relative;
-  top: -75px;
+.extra-padding {
+  margin-top: 5px;
 }

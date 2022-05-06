@@ -15,8 +15,8 @@ export const BasicSlider = (props) => {
   const railStyle = {
     position: 'absolute',
     width: '100%',
-    height: 10,
-    marginTop: 30,
+    height: 8,
+    marginTop: 17,
     borderRadius: 3,
     backgroundColor: '#8B9CB6',
   }

@@ -262,7 +262,18 @@ export default class HomePage extends Component {
 
         let courseName = d3.select('#course-name-text').property('value');
         if (courseName !== '') {
-            classes = classes.filter(class_ => class_['Course_Name'].toLowerCase().includes(courseName.toLowerCase()));
+            // classes = classes.filter(class_ => class_['Course_Name'].toLowerCase().includes(courseName.toLowerCase()));
+            let newClasses = []
+            
+            classes.forEach(class_ => {
+                let words = courseName.split(' ');
+                let temp = true;
+                words.forEach( word => {
+                    if ( !class_['Course_Name'].toLowerCase().includes(word.toLowerCase()) ) temp = false;
+                })
+                if (temp) newClasses.push(class_)
+            });
+            classes = newClasses;
         }
 
         let startTime = d3.select('#start-time-text').property('value');
@@ -321,7 +332,7 @@ export default class HomePage extends Component {
 
         classes.sort((d1, d2) => {
             //console.log(this.state.sortMethod)
-            if (this.state.sortMethod == "num") {
+            if (this.state.sortMethod === "Course Number") {
                 return Number(d1['Number']) - Number(d2['Number']);
             } else if (this.state.sortMethod === "dept") {
                 return d1['Dept'].localeCompare(d2['Dept'])
@@ -427,63 +438,67 @@ export default class HomePage extends Component {
                 <img src={CDSLogo} alt="cds logo" class="logo"></img>
 
                 <div class="extra3">
-                    <div class="row">
+                    <div class="row text-row">
                         <div class="col">
                             <div>
                                 <label for="check-1" class="box-label">Department</label>
-                                <input class="text-input" id='department-text' type="text" placeholder="Enter Dept..."></input>
+                                <input class="text-input" id='department-text' type="text" placeholder="CS"></input>
                                 <br></br>
                             </div>
-                        </div>
-
-                        <div class="col">
-                            <div>
-                                <label for="check-2" class="box-label">Professor</label>
-                                <input class="text-input" id='prof-text' type="text" placeholder="Enter Prof Name..."></input>
-                                <br></br>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <label for="check-4" class="box-label">Course Number</label>
-                            <input class="text-input" id='course-num-text' type="text" placeholder="Enter Course No."></input>
-                            <br></br>
                         </div>
 
                         <div class="col">
                             <div>
                                 <label for="check-5" class="box-label">Course Name</label>
-                                <input class="text-input" id='course-name-text' type="text" placeholder="Enter Course Name..."></input>
+                                <input class="text-input" id='course-name-text' type="text" placeholder="Introduction to Computing Using Python"></input>
                                 <br></br>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="row">
                         <div class="col">
                             <div>
                                 <label for="check-10" class="box-label">Start Time</label>
-                                <input class="text-input" id='start-time-text' type="text" placeholder="Enter Start Time..."></input>
+                                <input class="text-input" id='start-time-text' type="text" placeholder="9:05"></input>
                             </div>
                         </div>
+                       
+                    </div>
+
+                    <div class="row text-row">
+
+                    <div class="col">
+                            <div>
+                                <label for="check-2" class="box-label">Professor</label>
+                                <input class="text-input" id='prof-text' type="text" placeholder="Walker White"></input>
+                                <br></br>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <label for="check-4" class="box-label">Course Number</label>
+                            <input class="text-input" id='course-num-text' type="text" placeholder="4998"></input>
+                            <br></br>
+                        </div>
+
+                        
 
                         <div class="col">
                             <div>
                                 <label for="check-11" class="box-label">End Time</label>
-                                <input class="text-input" id='end-time-text' type="text" placeholder="Enter End Time..."></input>
+                                <input class="text-input" id='end-time-text' type="text" placeholder="9:55"></input>
                             </div>
                         </div>
                     </div>
+                    </div>
 
-                    <hr />
+                    
 
-                    <div class="row my-0">
+                    <div class="row my-0 extra">
+                        <hr />
                         <div class="col my-0">
                             <div>
-                                <div class="subrow">
-                                    <div class="col">
+                                {/* <div class="subrow"> */}
+                                    <div class="col extra-padding">
                                         <label for="check-6" >Professor Difficulty</label>
                                     </div>
                                     <div class="col">
@@ -491,13 +506,13 @@ export default class HomePage extends Component {
                                     </div>
                                 </div>
                                 <br></br>
-                            </div>
+                            {/* </div> */}
                         </div>
 
                         <div class="col my-0">
                             <div>
                                 <div class="subrow">
-                                    <div class="col">
+                                    <div class="col extra-padding">
                                         <label for="check-7">Class Difficulty</label>
                                     </div>
                                     <div class="col">
@@ -509,11 +524,11 @@ export default class HomePage extends Component {
                         </div>
                     </div>
 
-                    <div class="row my-0 slider">
-                        <div class="col my-0">
+                    <div class="row slider">
+                        <div class="col my-0 extra3">
                             <div>
                                 <div class="subrow">
-                                    <div class="col">
+                                    <div class="col extra-padding">
                                         <label for="check-8">Class Rating</label>
                                     </div>
                                     <div class="col">
@@ -523,10 +538,10 @@ export default class HomePage extends Component {
                             </div>
                         </div>
 
-                        <div class="col my-0">
+                        <div class="col my-0 extra3">
                             <div>
                                 <div class="subrow">
-                                    <div class="col">
+                                    <div class="col extra-padding">
                                         <label for="check-9">Class Workload</label>
                                     </div>
                                     <div class="col">
@@ -537,13 +552,23 @@ export default class HomePage extends Component {
                         </div>
                     </div>
 
-                    <div class="extra">
+                    <div class="extra4">
                         <hr />
 
                         <div class="row">
                             <label class="med-grade-text" id="centered">Median Grade</label>
                         </div>
-                        <div class="row">
+                        <div class="row dropdown-menus">
+
+                        <div class="col">
+                                <label>Semester</label>
+                                <br></br>
+                                <select id="semester-dropdown" title={this.state.semesterText} onChange={this.updateSemester}>
+                                    <option value="FA '22">FA '22</option>
+                                    <option value="SP '22">SP '22</option>
+                                </select>
+                            </div>
+
                             <div class="col">
                                 <ButtonToolbar className="justify-content-center" aria-label="Toolbar with Button groups">
                                     <ButtonGroup aria-label="First group" onClick={this.updateMedianGrade}>
@@ -561,19 +586,6 @@ export default class HomePage extends Component {
                                     <i>Disclaimer: We scraped median grade data from student generated spreadsheets.</i>
                                 </div>
                             </div>
-                        </div>
-
-                        <hr />
-
-                        <div class="row" id="dropdown-menus">
-                            <div class="col">
-                                <label>Semester</label>
-                                <br></br>
-                                <select id="semester-dropdown" title={this.state.semesterText} onChange={this.updateSemester}>
-                                    <option value="FA '22">FA '22</option>
-                                    <option value="SP '22">SP '22</option>
-                                </select>
-                            </div>
                             <div class="col">
                                 <label>Sort by</label>
                                 <br></br>
@@ -588,28 +600,28 @@ export default class HomePage extends Component {
                                     <option value="Median Grade">Median Grade</option>
                                 </select>
                             </div>
+
+                            <div id="CSVLink" class="col">
+                                <CSVLink data={this.state.savedClasses} id="export-button" headers={this.state.headers} filename={'Saved_Classes.csv'}>Export to CSV</CSVLink>
+                            </div>
                         </div>
+
+                        
+
+                     
                     </div>
 
-                    <div class="extra2">
+                    <div class="extra5">
+
                         <hr />
-
-                        <br />
-
-                        <div id="CSVLink">
-                            <CSVLink data={this.state.savedClasses} id="export-button" headers={this.state.headers} filename={'Saved_Classes.csv'}>Export to CSV</CSVLink>
-                        </div>
-
                         <div class="centered">
-                            <br />
                             {/* { this.state.loading && <iframe src="https://giphy.com/embed/3oEjI6SIIHBdRxXI40" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe> } */}
                             { this.state.loading && <img src={loadingGIF} alt="loading"></img> }
                         </div>
 
+
                         <div id="selected-class-info"></div>
                         <div style={{ align: "center" }}>
-                            <br></br>
-
                             <table id="class-info-table">
                                 <thead id="class-info-header">
                                     <tr id="class-info-header-row"></tr>
@@ -625,7 +637,7 @@ export default class HomePage extends Component {
 
 
 
-            </div>
+            // </div>
         )
     }
 }
