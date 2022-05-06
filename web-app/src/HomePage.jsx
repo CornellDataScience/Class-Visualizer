@@ -5,6 +5,8 @@ import fullDataFile from './data/FullerData_CUReviews_FA22_shortened.csv';
 import { BasicSlider } from './BasicSlider.jsx';
 import { Button, ButtonGroup, ButtonToolbar, Dropdown, DropdownButton } from 'react-bootstrap';
 import { CSVLink } from 'react-csv';
+import CDSLogo from './images/cds_logo.png';
+import loadingGIF from './images/loading.gif';
 
 // Department: Dept
 // Professor: Professor_x
@@ -45,7 +47,8 @@ export default class HomePage extends Component {
             sortByText: "Department",
             savedClasses: [],
             headers: [  'Department', 'Course Number', 'Course Name', 'Professor', 'Median Grade', 'Class Rating',
-            'Class Difficulty', 'Class Workload', 'Professor Difficulty', 'Start Time', 'End Time'  ]
+            'Class Difficulty', 'Class Workload', 'Professor Difficulty', 'Start Time', 'End Time'  ],
+            loading: true
         };
 
         this.allGrades = ['B-', 'B', 'B+', 'A-', 'A', 'A+'];
@@ -142,6 +145,7 @@ export default class HomePage extends Component {
     }
 
     plotClassInfo() {
+        this.setState( {loading: true} );
         let class_data = this.updateSearch()
         console.log(class_data);
 
@@ -213,6 +217,8 @@ export default class HomePage extends Component {
             .data(fields.map(d => this.fieldMapping[d]).concat(['Add Class']))
             .join('th')
             .text(d => d)
+        
+        this.setState( {loading: false});
     }
 
     updateSemester() {
@@ -399,14 +405,6 @@ export default class HomePage extends Component {
         this.createViz();
         d3.selectAll('.text-input').on('change', this.plotClassInfo)
         d3.selectAll('.slider').on('change', this.plotClassInfo)
-
-
-
-
-
-        // d3.select('#sem').on('change', () => {
-        //     console.log(d3.select('#sem').property('value'))
-        // })
     }
 
     componentDidUpdate() {
@@ -426,8 +424,9 @@ export default class HomePage extends Component {
             <div className="Home-Page App">
                 <br />
                 <h1 class="centered">Class Visualizer</h1>
+                <img src={CDSLogo} alt="cds logo" class="logo"></img>
 
-                <div>
+                <div class="extra3">
                     <div class="row">
                         <div class="col">
                             <div>
@@ -510,7 +509,7 @@ export default class HomePage extends Component {
                         </div>
                     </div>
 
-                    <div class="row my-0">
+                    <div class="row my-0 slider">
                         <div class="col my-0">
                             <div>
                                 <div class="subrow">
@@ -518,7 +517,7 @@ export default class HomePage extends Component {
                                         <label for="check-8">Class Rating</label>
                                     </div>
                                     <div class="col">
-                                        <BasicSlider id="class-rat-slider" class="slider" changeFunc={this.plotClassInfo} updateVal1={this.setSliderVal5} updateVal2={this.setSliderVal6} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                        <BasicSlider id="class-rat-slider" changeFunc={this.plotClassInfo} updateVal1={this.setSliderVal5} updateVal2={this.setSliderVal6} minimum={1} maximum={5} time={false} ></BasicSlider>
                                     </div>
                                 </div>
                             </div>
@@ -531,85 +530,101 @@ export default class HomePage extends Component {
                                         <label for="check-9">Class Workload</label>
                                     </div>
                                     <div class="col">
-                                        <BasicSlider id="class-work-slider" class="slider" changeFunc={this.plotClassInfo} updateVal1={this.setSliderVal7} updateVal2={this.setSliderVal8} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                        <BasicSlider id="class-work-slider" changeFunc={this.plotClassInfo} updateVal1={this.setSliderVal7} updateVal2={this.setSliderVal8} minimum={1} maximum={5} time={false} ></BasicSlider>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <label class="med-grade-text" id="centered">Median Grade</label>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <ButtonToolbar className="justify-content-center" aria-label="Toolbar with Button groups">
-                                <ButtonGroup aria-label="First group" onClick={this.updateMedianGrade}>
-                                    <Button variant="secondary" value="Any">Any</Button>{' '}
-                                    <Button variant="secondary" value="A+">A+</Button>{' '}
-                                    <Button variant="secondary" value="A">A</Button>{' '}
-                                    <Button variant="secondary" value="A-">A-</Button>{' '}
-                                    <Button variant="secondary" value="B+">B+</Button>{' '}
-                                    <Button variant="secondary" value="B">B</Button>{' '}
-                                    <Button variant="secondary" value="B-">B-</Button>
-                                </ButtonGroup>
-                            </ButtonToolbar>
+                    <div class="extra">
+                        <hr />
+
+                        <div class="row">
+                            <label class="med-grade-text" id="centered">Median Grade</label>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <ButtonToolbar className="justify-content-center" aria-label="Toolbar with Button groups">
+                                    <ButtonGroup aria-label="First group" onClick={this.updateMedianGrade}>
+                                        <Button variant="secondary" value="Any">Any</Button>{' '}
+                                        <Button variant="secondary" value="A+">A+</Button>{' '}
+                                        <Button variant="secondary" value="A">A</Button>{' '}
+                                        <Button variant="secondary" value="A-">A-</Button>{' '}
+                                        <Button variant="secondary" value="B+">B+</Button>{' '}
+                                        <Button variant="secondary" value="B">B</Button>{' '}
+                                        <Button variant="secondary" value="B-">B-</Button>
+                                    </ButtonGroup>
+                                </ButtonToolbar>
+                                <br />
+                                <div class="centered disclaimer">
+                                    <i>Disclaimer: We scraped median grade data from student generated spreadsheets.</i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div class="row" id="dropdown-menus">
+                            <div class="col">
+                                <label>Semester</label>
+                                <br></br>
+                                <select id="semester-dropdown" title={this.state.semesterText} onChange={this.updateSemester}>
+                                    <option value="FA '22">FA '22</option>
+                                    <option value="SP '22">SP '22</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label>Sort by</label>
+                                <br></br>
+
+                                <select id="sortby-dropdown" title={this.state.sortByText} onChange={this.updateSortBy}>
+                                    <option value="Department">Department</option>
+                                    <option value="Course Number">Course Number</option>
+                                    <option value="Rating">Rating</option>
+                                    <option value="Workload">Workload</option>
+                                    <option value="Class Difficulty">Class Difficulty</option>
+                                    <option value="Prof Difficulty">Prof Difficulty</option>
+                                    <option value="Median Grade">Median Grade</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
-                    <hr />
+                    <div class="extra2">
+                        <hr />
 
-                    <div class="row" id="dropdown-menus">
-                        <div class="col">
-                            <label>Semester</label>
-                            <br></br>
-                            <select id="semester-dropdown" title={this.state.semesterText} onChange={this.updateSemester}>
-                                <option value="FA '22">FA '22</option>
-                                <option value="SP '22">SP '22</option>
-                            </select>
+                        <br />
+
+                        <div id="CSVLink">
+                            <CSVLink data={this.state.savedClasses} id="export-button" headers={this.state.headers} filename={'Saved_Classes.csv'}>Export to CSV</CSVLink>
                         </div>
-                        <div class="col">
-                            <label>Sort by</label>
+
+                        <div class="centered">
+                            <br />
+                            {/* { this.state.loading && <iframe src="https://giphy.com/embed/3oEjI6SIIHBdRxXI40" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe> } */}
+                            { this.state.loading && <img src={loadingGIF} alt="loading"></img> }
+                        </div>
+
+                        <div id="selected-class-info"></div>
+                        <div style={{ align: "center" }}>
                             <br></br>
 
-                            <select id="sortby-dropdown" title={this.state.sortByText} onChange={this.updateSortBy}>
-                                <option value="Department">Department</option>
-                                <option value="Course Number">Course Number</option>
-                                <option value="Rating">Rating</option>
-                                <option value="Workload">Workload</option>
-                                <option value="Class Difficulty">Class Difficulty</option>
-                                <option value="Prof Difficulty">Prof Difficulty</option>
-                                <option value="Median Grade">Median Grade</option>
-                            </select>
+                            <table id="class-info-table">
+                                <thead id="class-info-header">
+                                    <tr id="class-info-header-row"></tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+
+                            {list}
+
                         </div>
                     </div>
                 </div>
 
-                <hr />
 
-                <br />
 
-                <div>
-                <div class="row">
-                    <CSVLink data={this.state.savedClasses} id="export-button" headers={this.state.headers} filename={'Saved_Classes.csv'}>Export to CSV</CSVLink>
-                    
-                    </div>
-                    </div>
-                <div id="selected-class-info"></div>
-                <div style={{ align: "center" }}>
-                    <br></br>
-
-                    <table id="class-info-table">
-                        <thead id="class-info-header">
-                            <tr id="class-info-header-row"></tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-
-                    {list}
-                    <div id="class-info-plot"></div>
-
-                </div>
             </div>
         )
     }

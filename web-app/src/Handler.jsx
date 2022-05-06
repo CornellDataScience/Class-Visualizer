@@ -20,7 +20,7 @@ export function Handle({
         left: `${percent}%`,
         position: 'absolute',
         marginLeft: -15,
-        marginTop: 25,
+        marginTop: 20,
         zIndex: 2,
         width: 30,
         height: 30,
@@ -33,7 +33,7 @@ export function Handle({
       }}
       {...getHandleProps(id)}
     >
-      <div style={{ fontFamily: 'Roboto', fontSize: 20, marginTop: -30 }}>
+      <div style={{ fontFamily: 'Roboto', fontSize: 16, marginTop: -20 }}>
         {time ? timeDict[value] : value}
       </div>
     </div>

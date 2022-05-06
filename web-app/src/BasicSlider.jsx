@@ -16,7 +16,7 @@ export const BasicSlider = (props) => {
     position: 'absolute',
     width: '100%',
     height: 10,
-    marginTop: 35,
+    marginTop: 30,
     borderRadius: 3,
     backgroundColor: '#8B9CB6',
   }
