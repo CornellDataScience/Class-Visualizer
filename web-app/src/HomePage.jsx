@@ -3,23 +3,10 @@ import * as d3 from 'd3';
 import fullDataFileSP from './data/FullerData_CUReviews_shortened.csv';
 import fullDataFile from './data/FullerData_CUReviews_FA22_shortened.csv';
 import { BasicSlider } from './BasicSlider.jsx';
-import { Button, ButtonGroup, ButtonToolbar, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Button, ButtonGroup, ButtonToolbar, Dropdown, DropdownButton, ToggleButton } from 'react-bootstrap';
 import { CSVLink } from 'react-csv';
 import CDSLogo from './images/cds_logo.png';
 import loadingGIF from './images/loading.gif';
-
-// Department: Dept
-// Professor: Professor_x
-// Course Number: Number
-// Course Name: Course_Name
-// Start Time: Start_Time
-// End Time: End_Time
-// Professor Difficulty: Difficulty
-// Class Difficulty: CU_Reviews_Difficulty
-// Class Rating: CU_Reviews_Rating
-// Class Workload: CU_Reviews_Workload
-// Median Grade: Median Grade
-
 
 export default class HomePage extends Component {
 
@@ -48,7 +35,8 @@ export default class HomePage extends Component {
             savedClasses: [],
             headers: [  'Department', 'Course Number', 'Course Name', 'Professor', 'Median Grade', 'Class Rating',
             'Class Difficulty', 'Class Workload', 'Professor Difficulty', 'Start Time', 'End Time'  ],
-            loading: true
+            loading: true,
+            showPlots: false
         };
 
         this.allGrades = ['B-', 'B', 'B+', 'A-', 'A', 'A+'];
@@ -77,6 +65,7 @@ export default class HomePage extends Component {
         this.plotClassInfo = this.plotClassInfo.bind(this);
         this.updateMedianGrade = this.updateMedianGrade.bind(this);
         this.toggleTableInfo = this.toggleTableInfo.bind(this);
+        this.generatePlots = this.generatePlots.bind(this);
 
         this.setSliderVal1 = this.setSliderVal1.bind(this);
         this.setSliderVal2 = this.setSliderVal2.bind(this);
@@ -136,23 +125,101 @@ export default class HomePage extends Component {
     }
 
     toggleTableInfo(e) {
-
-
         let newFields = this.state.toggle ? this.state.oldFieldsShown : Object.keys(this.fieldMapping);
         this.setState({ oldFieldsShown: this.state.fieldsShown })
         this.setState({ fieldsShown: newFields }, this.plotClassInfo);
         this.setState({ toggle: !this.state.toggle });
     }
 
-    plotClassInfo() {
+    // initializePlots() {
+
+        
+
+    //     let svg = d3.select("#class-plots")
+    //                 .selectAll('svg')
+    //                 .data([1])
+    //                 .join('svg')
+    //                 .attr("width", width + margin.left + margin.right)
+    //                 .attr("height", height + margin.top + margin.bottom)
+    //                 .append("g")
+    //                 .attr("transform",
+    //                       "translate(" + margin.left + "," + margin.top + ")");
+
+    // }
+
+    generatePlots(classData, change) {
+
+        let margin = {top: 30, right: 30, bottom: 70, left: 60},
+                    width = 460 - margin.left - margin.right,
+                    height = 400 - margin.top - margin.bottom;
+
+        let div = d3.select("#class-plots")
+
+        div.selectAll("*").remove()
+        
+        if (change) {
+            let svg = div.selectAll('svg')
+                        .data([1])
+                        .join('svg')
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                        .append("g")
+                        .attr("transform",
+                            "translate(" + margin.left + "," + margin.top + ")");
+            
+            let medianDict = { 'A+': 0, 'A': 0, 'A-': 0, 'B+': 0, 'B': 0, 'B-': 0 }
+            
+            let totalEntries = classData.filter( class_ => this.allGrades.includes(class_['Median Grade']) ).length
+            this.allGrades.forEach( grade => {
+                medianDict[grade] = classData.filter( class_ => class_['Median Grade'] === grade).length * 100 / totalEntries
+            })
+
+            let medianData = [];
+            this.allGrades.forEach( grade => {
+                medianData.push( {'Grade': grade, 'Percent': medianDict[grade]} )
+            })
+
+            // X axis
+            var x = d3.scaleBand()
+                .range([ 0, width ])
+                .domain(this.allGrades)
+                .padding(0.2);
+                
+            svg.selectAll("g")
+                .data([1])
+                .join('g')
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x))
+                .selectAll("text")
+                .attr("transform", "translate(-10,0)rotate(-45)")
+                .style("text-anchor", "end");
+            
+            // Add Y axis
+            var y = d3.scaleLinear()
+                .domain([0, 100])
+                .range([ height, 0]);
+            
+            svg.append("g")
+                .call(d3.axisLeft(y));
+
+            // Bars
+            svg.selectAll("rect")
+                .data(medianData)
+                .join("rect")
+                .attr("x", function(d) { return x(d['Grade']); })
+                .attr("y", function(d) { return y(d['Percent']); })
+                .attr("width", x.bandwidth())
+                .attr("height", function(d) { return height - y(d['Percent']); })
+                .attr("fill", "#69b0a0")
+        }
+
+    }
+
+    plotClassInfo(change = false) {
+
         this.setState( {loading: true} );
         let class_data = this.updateSearch()
-        console.log(class_data);
-
-        let svg = d3.select("#class-info-plot")
-            .append('svg')
-            .attr('height', 500)
-            .attr('width', 1000)
+        this.generatePlots(class_data, change);
 
         let list = d3.select('#class-info');
 
@@ -331,7 +398,6 @@ export default class HomePage extends Component {
         this.setState({ fieldsShown: all_fields });
 
         classes.sort((d1, d2) => {
-            //console.log(this.state.sortMethod)
             if (this.state.sortMethod === "Course Number") {
                 return Number(d1['Number']) - Number(d2['Number']);
             } else if (this.state.sortMethod === "dept") {
@@ -425,11 +491,7 @@ export default class HomePage extends Component {
     render() {
         let list;
 
-        if (this.state.showPlot) {
-            list = <ul id='class-info'>Class Info</ul>;
-        } else {
-            list = <ul id='class-info'></ul>;
-        }
+        let showPlots = this.state.showPlots;
 
         return (
             <div className="Home-Page App">
@@ -604,11 +666,14 @@ export default class HomePage extends Component {
                             <div id="CSVLink" class="col">
                                 <CSVLink data={this.state.savedClasses} id="export-button" headers={this.state.headers} filename={'Saved_Classes.csv'}>Export to CSV</CSVLink>
                             </div>
+
+                            <div class="col">
+                                <Button type="checkbox" onClick={ () => {
+                                    this.setState( {showPlots: !showPlots});
+                                    this.plotClassInfo(!showPlots)
+                                }}>Toggle Median Grade Plot</Button>
+                            </div>
                         </div>
-
-                        
-
-                     
                     </div>
 
                     <div class="extra5">
@@ -620,7 +685,7 @@ export default class HomePage extends Component {
                         </div>
 
 
-                        <div id="selected-class-info"></div>
+                        <div id="class-plots" class="centered"></div>
                         <div style={{ align: "center" }}>
                             <table id="class-info-table">
                                 <thead id="class-info-header">
@@ -634,10 +699,6 @@ export default class HomePage extends Component {
                         </div>
                     </div>
                 </div>
-
-
-
-            // </div>
         )
     }
 }
