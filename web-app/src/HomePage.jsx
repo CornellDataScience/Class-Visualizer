@@ -6,7 +6,7 @@ import { BasicSlider } from './BasicSlider.jsx';
 import { Button, ButtonGroup, ButtonToolbar, Dropdown, DropdownButton, ToggleButton } from 'react-bootstrap';
 import { CSVLink } from 'react-csv';
 import CDSLogo from './images/cds_logo.png';
-import loadingGIF from './images/loading.gif';
+import loadingGIF from './images/hourglass.gif';
 
 export default class HomePage extends Component {
 
@@ -33,8 +33,8 @@ export default class HomePage extends Component {
             semesterText: "FA '22",
             sortByText: "Department",
             savedClasses: [],
-            headers: [  'Department', 'Course Number', 'Course Name', 'Professor', 'Median Grade', 'Class Rating',
-            'Class Difficulty', 'Class Workload', 'Professor Difficulty', 'Start Time', 'End Time'  ],
+            headers: ['Department', 'Course Number', 'Course Name', 'Professor', 'Median Grade', 'Class Rating',
+                'Class Difficulty', 'Class Workload', 'Professor Difficulty', 'Start Time', 'End Time'],
             loading: true,
             showPlots: false
         };
@@ -55,7 +55,7 @@ export default class HomePage extends Component {
         }
 
         this.medGradeMapping = {
-            "A+" : 10, "A" : 9,"A-" : 8, "B+" : 7, "B" : 6, "B-" : 5
+            "A+": 10, "A": 9, "A-": 8, "B+": 7, "B": 6, "B-": 5
         }
 
         this.createViz = this.createViz.bind(this);
@@ -121,7 +121,7 @@ export default class HomePage extends Component {
         let profs = [];
 
         this.toggleTableInfo();
-        this.plotClassInfo();
+        this.plotClassInfo(false);
     }
 
     toggleTableInfo(e) {
@@ -133,7 +133,7 @@ export default class HomePage extends Component {
 
     // initializePlots() {
 
-        
+
 
     //     let svg = d3.select("#class-plots")
     //                 .selectAll('svg')
@@ -149,42 +149,49 @@ export default class HomePage extends Component {
 
     generatePlots(classData, change) {
 
-        let margin = {top: 30, right: 30, bottom: 70, left: 60},
-                    width = 460 - margin.left - margin.right,
-                    height = 400 - margin.top - margin.bottom;
+        let margin = { top: 30, right: 30, bottom: 70, left: 60 },
+            width = 460 - margin.left - margin.right,
+            height = 400 - margin.top - margin.bottom;
 
         let div = d3.select("#class-plots")
 
         div.selectAll("*").remove()
-        
+
         if (change) {
             let svg = div.selectAll('svg')
-                        .data([1])
-                        .join('svg')
-                        .attr("width", width + margin.left + margin.right)
-                        .attr("height", height + margin.top + margin.bottom)
-                        .append("g")
-                        .attr("transform",
-                            "translate(" + margin.left + "," + margin.top + ")");
-            
+                .data([1])
+                .join('svg')
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform",
+                    "translate(" + margin.left + "," + margin.top + ")")
+                .attr("fill", "#302d86");
+
+            svg.append("text")
+                .attr("text-anchor", "end")
+                .attr("x", width)
+                .attr("y", height + 40)
+                .text("Grade Distribution (%)")
+
             let medianDict = { 'A+': 0, 'A': 0, 'A-': 0, 'B+': 0, 'B': 0, 'B-': 0 }
-            
-            let totalEntries = classData.filter( class_ => this.allGrades.includes(class_['Median Grade']) ).length
-            this.allGrades.forEach( grade => {
-                medianDict[grade] = classData.filter( class_ => class_['Median Grade'] === grade).length * 100 / totalEntries
+
+            let totalEntries = classData.filter(class_ => this.allGrades.includes(class_['Median Grade'])).length
+            this.allGrades.forEach(grade => {
+                medianDict[grade] = classData.filter(class_ => class_['Median Grade'] === grade).length * 100 / totalEntries
             })
 
             let medianData = [];
-            this.allGrades.forEach( grade => {
-                medianData.push( {'Grade': grade, 'Percent': medianDict[grade]} )
+            this.allGrades.forEach(grade => {
+                medianData.push({ 'Grade': grade, 'Percent': medianDict[grade] })
             })
 
             // X axis
             var x = d3.scaleBand()
-                .range([ 0, width ])
+                .range([0, width])
                 .domain(this.allGrades)
                 .padding(0.2);
-                
+
             svg.selectAll("g")
                 .data([1])
                 .join('g')
@@ -193,12 +200,12 @@ export default class HomePage extends Component {
                 .selectAll("text")
                 .attr("transform", "translate(-10,0)rotate(-45)")
                 .style("text-anchor", "end");
-            
+
             // Add Y axis
             var y = d3.scaleLinear()
                 .domain([0, 100])
-                .range([ height, 0]);
-            
+                .range([height, 0]);
+
             svg.append("g")
                 .call(d3.axisLeft(y));
 
@@ -206,24 +213,24 @@ export default class HomePage extends Component {
             svg.selectAll("rect")
                 .data(medianData)
                 .join("rect")
-                .attr("x", function(d) { return x(d['Grade']); })
-                .attr("y", function(d) { return y(d['Percent']); })
+                .attr("x", function (d) { return x(d['Grade']); })
+                .attr("y", function (d) { return y(d['Percent']); })
                 .attr("width", x.bandwidth())
-                .attr("height", function(d) { return height - y(d['Percent']); })
-                .attr("fill", "#69b0a0")
+                .attr("height", function (d) { return height - y(d['Percent']); })
+                .attr("fill", "#302d86")
         }
 
     }
 
     plotClassInfo(change = false) {
 
-        this.setState( {loading: true} );
+        this.setState({ loading: true });
         let class_data = this.updateSearch()
         this.generatePlots(class_data, change);
 
         let list = d3.select('#class-info');
 
-        let colors = ['white', 'lightgray']
+        let colors = ['#e1e0f6', '#bebbf7']
 
         // Update Table
         let tableBody = d3.select('#class-info-table tbody');
@@ -232,6 +239,7 @@ export default class HomePage extends Component {
             .data(class_data)
             .join('tr')
             .style('background-color', d => colors[class_data.indexOf(d) % 2])
+            .style('border-radius', '10px')
 
         let fields = this.state.fieldsShown;
 
@@ -253,20 +261,20 @@ export default class HomePage extends Component {
             .attr('type', 'checkbox')
             .on('change', d => {
                 let course = d.srcElement.__data__
-                
+
                 let savedData = {
-                                    'Department': course['Dept'],
-                                    'Course Number': course['Num'],
-                                    'Course Name': course['Course_Name'],
-                                    'Professor': course['Professor'],
-                                    'Median Grade': course['Median Grade'],
-                                    'Class Rating': course['CU_Reviews_Rating'],
-                                    'Class Difficulty': course['CU_Reviews_Difficulty'],
-                                    'Class Workload': course['CU_Reviews_Workload'],
-                                    'Professor Difficulty': course['Difficulty'],
-                                    'Start Time': course['Start_Time'],
-                                    'End Time': course['End_Time']
-                                }
+                    'Department': course['Dept'],
+                    'Course Number': course['Num'],
+                    'Course Name': course['Course_Name'],
+                    'Professor': course['Professor'],
+                    'Median Grade': course['Median Grade'],
+                    'Class Rating': course['CU_Reviews_Rating'],
+                    'Class Difficulty': course['CU_Reviews_Difficulty'],
+                    'Class Workload': course['CU_Reviews_Workload'],
+                    'Professor Difficulty': course['Difficulty'],
+                    'Start Time': course['Start_Time'],
+                    'End Time': course['End_Time']
+                }
 
                 let currentCourses = this.state.savedClasses
                 if (currentCourses.includes(savedData)) {
@@ -284,8 +292,8 @@ export default class HomePage extends Component {
             .data(fields.map(d => this.fieldMapping[d]).concat(['Add Class']))
             .join('th')
             .text(d => d)
-        
-        this.setState( {loading: false});
+
+        this.setState({ loading: false });
     }
 
     updateSemester() {
@@ -331,12 +339,12 @@ export default class HomePage extends Component {
         if (courseName !== '') {
             // classes = classes.filter(class_ => class_['Course_Name'].toLowerCase().includes(courseName.toLowerCase()));
             let newClasses = []
-            
+
             classes.forEach(class_ => {
                 let words = courseName.split(' ');
                 let temp = true;
-                words.forEach( word => {
-                    if ( !class_['Course_Name'].toLowerCase().includes(word.toLowerCase()) ) temp = false;
+                words.forEach(word => {
+                    if (!class_['Course_Name'].toLowerCase().includes(word.toLowerCase())) temp = false;
                 })
                 if (temp) newClasses.push(class_)
             });
@@ -454,10 +462,10 @@ export default class HomePage extends Component {
                 let d1w = d1['Median Grade'];
                 let d2w = d2['Median Grade'];
                 if (d1w !== "" && d2w !== "") {
-                    return  this.medGradeMapping[d2w] - this.medGradeMapping[d1w]
+                    return this.medGradeMapping[d2w] - this.medGradeMapping[d1w]
                 } else if (d1w !== "") {
                     return -1
-                } else if (d2w !=="") {
+                } else if (d2w !== "") {
                     return 1
                 } else {
                     return 0
@@ -496,7 +504,7 @@ export default class HomePage extends Component {
         return (
             <div className="Home-Page App">
                 <br />
-                <h1 class="centered">Class Visualizer</h1>
+                <h1 class="centered">Cornell EZ-A</h1>
                 <img src={CDSLogo} alt="cds logo" class="logo"></img>
 
                 <div class="extra3">
@@ -509,7 +517,7 @@ export default class HomePage extends Component {
                             </div>
                         </div>
 
-                        <div class="col">
+                        <div class="col midcol">
                             <div>
                                 <label for="check-5" class="box-label">Course Name</label>
                                 <input class="text-input" id='course-name-text' type="text" placeholder="Introduction to Computing Using Python"></input>
@@ -517,18 +525,18 @@ export default class HomePage extends Component {
                             </div>
                         </div>
 
-                        <div class="col">
+                        <div class="col rightcol">
                             <div>
                                 <label for="check-10" class="box-label">Start Time</label>
                                 <input class="text-input" id='start-time-text' type="text" placeholder="9:05"></input>
                             </div>
                         </div>
-                       
+
                     </div>
 
                     <div class="row text-row">
 
-                    <div class="col">
+                        <div class="col">
                             <div>
                                 <label for="check-2" class="box-label">Professor</label>
                                 <input class="text-input" id='prof-text' type="text" placeholder="Walker White"></input>
@@ -536,169 +544,169 @@ export default class HomePage extends Component {
                             </div>
                         </div>
 
-                        <div class="col">
+                        <div class="col midcol">
                             <label for="check-4" class="box-label">Course Number</label>
                             <input class="text-input" id='course-num-text' type="text" placeholder="4998"></input>
                             <br></br>
                         </div>
 
-                        
 
-                        <div class="col">
+
+                        <div class="col rightcol">
                             <div>
                                 <label for="check-11" class="box-label">End Time</label>
                                 <input class="text-input" id='end-time-text' type="text" placeholder="9:55"></input>
                             </div>
                         </div>
                     </div>
-                    </div>
+                </div>
 
-                    
 
-                    <div class="row my-0 extra">
-                        <hr />
-                        <div class="col my-0">
-                            <div>
-                                {/* <div class="subrow"> */}
-                                    <div class="col extra-padding">
-                                        <label for="check-6" >Professor Difficulty</label>
-                                    </div>
-                                    <div class="col">
-                                        <BasicSlider id="prof-diff-slider" class="slider" changeFunc={this.plotClassInfo} updateVal1={this.setSliderVal1} updateVal2={this.setSliderVal2} minimum={1} maximum={5} time={false} ></BasicSlider>
-                                    </div>
-                                </div>
-                                <br></br>
-                            {/* </div> */}
-                        </div>
 
-                        <div class="col my-0">
-                            <div>
-                                <div class="subrow">
-                                    <div class="col extra-padding">
-                                        <label for="check-7">Class Difficulty</label>
-                                    </div>
-                                    <div class="col">
-                                        <BasicSlider id="class-diff-slider" class="slider" changeFunc={this.plotClassInfo} updateVal1={this.setSliderVal3} updateVal2={this.setSliderVal4} minimum={1} maximum={5} time={false} ></BasicSlider>
-                                    </div>
-                                </div>
-                                <br></br>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row slider">
-                        <div class="col my-0 extra3">
-                            <div>
-                                <div class="subrow">
-                                    <div class="col extra-padding">
-                                        <label for="check-8">Class Rating</label>
-                                    </div>
-                                    <div class="col">
-                                        <BasicSlider id="class-rat-slider" changeFunc={this.plotClassInfo} updateVal1={this.setSliderVal5} updateVal2={this.setSliderVal6} minimum={1} maximum={5} time={false} ></BasicSlider>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col my-0 extra3">
-                            <div>
-                                <div class="subrow">
-                                    <div class="col extra-padding">
-                                        <label for="check-9">Class Workload</label>
-                                    </div>
-                                    <div class="col">
-                                        <BasicSlider id="class-work-slider" changeFunc={this.plotClassInfo} updateVal1={this.setSliderVal7} updateVal2={this.setSliderVal8} minimum={1} maximum={5} time={false} ></BasicSlider>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="extra4">
-                        <hr />
-
-                        <div class="row">
-                            <label class="med-grade-text" id="centered">Median Grade</label>
-                        </div>
-                        <div class="row dropdown-menus">
-
-                        <div class="col">
-                                <label>Semester</label>
-                                <br></br>
-                                <select id="semester-dropdown" title={this.state.semesterText} onChange={this.updateSemester}>
-                                    <option value="FA '22">FA '22</option>
-                                    <option value="SP '22">SP '22</option>
-                                </select>
-                            </div>
-
-                            <div class="col">
-                                <ButtonToolbar className="justify-content-center" aria-label="Toolbar with Button groups">
-                                    <ButtonGroup aria-label="First group" onClick={this.updateMedianGrade}>
-                                        <Button variant="secondary" value="Any">Any</Button>{' '}
-                                        <Button variant="secondary" value="A+">A+</Button>{' '}
-                                        <Button variant="secondary" value="A">A</Button>{' '}
-                                        <Button variant="secondary" value="A-">A-</Button>{' '}
-                                        <Button variant="secondary" value="B+">B+</Button>{' '}
-                                        <Button variant="secondary" value="B">B</Button>{' '}
-                                        <Button variant="secondary" value="B-">B-</Button>
-                                    </ButtonGroup>
-                                </ButtonToolbar>
-                                <br />
-                                <div class="centered disclaimer">
-                                    <i>Disclaimer: We scraped median grade data from student generated spreadsheets.</i>
-                                </div>
+                <div class="row my-0 extra">
+                    <hr />
+                    <div class="col my-0">
+                        <div>
+                            {/* <div class="subrow"> */}
+                            <div class="col extra-padding">
+                                <label for="check-6" >Professor Difficulty</label>
                             </div>
                             <div class="col">
-                                <label>Sort by</label>
-                                <br></br>
-
-                                <select id="sortby-dropdown" title={this.state.sortByText} onChange={this.updateSortBy}>
-                                    <option value="Department">Department</option>
-                                    <option value="Course Number">Course Number</option>
-                                    <option value="Rating">Rating</option>
-                                    <option value="Workload">Workload</option>
-                                    <option value="Class Difficulty">Class Difficulty</option>
-                                    <option value="Prof Difficulty">Prof Difficulty</option>
-                                    <option value="Median Grade">Median Grade</option>
-                                </select>
-                            </div>
-
-                            <div id="CSVLink" class="col">
-                                <CSVLink data={this.state.savedClasses} id="export-button" headers={this.state.headers} filename={'Saved_Classes.csv'}>Export to CSV</CSVLink>
-                            </div>
-
-                            <div class="col">
-                                <Button type="checkbox" onClick={ () => {
-                                    this.setState( {showPlots: !showPlots});
-                                    this.plotClassInfo(!showPlots)
-                                }}>Toggle Median Grade Plot</Button>
+                                <BasicSlider id="prof-diff-slider" class="slider" changeFunc={this.plotClassInfo} updateVal1={this.setSliderVal1} updateVal2={this.setSliderVal2} minimum={1} maximum={5} time={false} ></BasicSlider>
                             </div>
                         </div>
+                        <br></br>
+                        {/* </div> */}
                     </div>
 
-                    <div class="extra5">
-
-                        <hr />
-                        <div class="centered">
-                            {/* { this.state.loading && <iframe src="https://giphy.com/embed/3oEjI6SIIHBdRxXI40" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe> } */}
-                            { this.state.loading && <img src={loadingGIF} alt="loading"></img> }
-                        </div>
-
-
-                        <div id="class-plots" class="centered"></div>
-                        <div style={{ align: "center" }}>
-                            <table id="class-info-table">
-                                <thead id="class-info-header">
-                                    <tr id="class-info-header-row"></tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-
-                            {list}
-
+                    <div class="col my-0">
+                        <div>
+                            <div class="subrow">
+                                <div class="col extra-padding rightcol">
+                                    <label for="check-7">Class Difficulty</label>
+                                </div>
+                                <div class="col rightcol">
+                                    <BasicSlider id="class-diff-slider" class="slider" changeFunc={this.plotClassInfo} updateVal1={this.setSliderVal3} updateVal2={this.setSliderVal4} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                </div>
+                            </div>
+                            <br></br>
                         </div>
                     </div>
                 </div>
+
+                <div class="row slider">
+                    <div class="col my-0 extra3">
+                        <div>
+                            <div class="subrow">
+                                <div class="col extra-padding">
+                                    <label for="check-8">Class Rating</label>
+                                </div>
+                                <div class="col">
+                                    <BasicSlider id="class-rat-slider" changeFunc={this.plotClassInfo} updateVal1={this.setSliderVal5} updateVal2={this.setSliderVal6} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col my-0 extra3">
+                        <div>
+                            <div class="subrow">
+                                <div class="col extra-padding">
+                                    <label for="check-9">Class Workload</label>
+                                </div>
+                                <div class="col">
+                                    <BasicSlider id="class-work-slider" changeFunc={this.plotClassInfo} updateVal1={this.setSliderVal7} updateVal2={this.setSliderVal8} minimum={1} maximum={5} time={false} ></BasicSlider>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="extra4">
+                    <hr />
+
+                    <div class="row">
+                        <label class="med-grade-text" id="centered">Median Grade</label>
+                    </div>
+                    <div class="row dropdown-menus">
+
+                        <div class="col">
+                            <label>Semester</label>
+                            <br></br>
+                            <select id="semester-dropdown" title={this.state.semesterText} onChange={this.updateSemester}>
+                                <option value="FA '22">FA '22</option>
+                                <option value="SP '22">SP '22</option>
+                            </select>
+                        </div>
+
+                        <div class="col">
+                            <ButtonToolbar className="justify-content-center" aria-label="Toolbar with Button groups">
+                                <ButtonGroup aria-label="First group" onClick={this.updateMedianGrade}>
+                                    <Button variant="secondary" value="Any">Any</Button>{' '}
+                                    <Button variant="secondary" value="A+">A+</Button>{' '}
+                                    <Button variant="secondary" value="A">A</Button>{' '}
+                                    <Button variant="secondary" value="A-">A-</Button>{' '}
+                                    <Button variant="secondary" value="B+">B+</Button>{' '}
+                                    <Button variant="secondary" value="B">B</Button>{' '}
+                                    <Button variant="secondary" value="B-">B-</Button>
+                                </ButtonGroup>
+                            </ButtonToolbar>
+                            <br />
+                            <div class="centered disclaimer">
+                                <i>Disclaimer: We scraped median grade data from student generated spreadsheets.</i>
+                            </div>
+                        </div>
+                        <div class="col rightcol">
+                            <label>Sort by</label>
+                            <br></br>
+
+                            <select id="sortby-dropdown" title={this.state.sortByText} onChange={this.updateSortBy}>
+                                <option value="Department">Department</option>
+                                <option value="Course Number">Course Number</option>
+                                <option value="Rating">Rating</option>
+                                <option value="Workload">Workload</option>
+                                <option value="Class Difficulty">Class Difficulty</option>
+                                <option value="Prof Difficulty">Prof Difficulty</option>
+                                <option value="Median Grade">Median Grade</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="CSVLink" class="col">
+                            <CSVLink data={this.state.savedClasses} id="export-button" headers={this.state.headers} filename={'Saved_Classes.csv'}>Export to CSV</CSVLink>
+                        </div>
+
+                        <div class="col">
+                            <Button type="checkbox" onClick={() => {
+                                this.setState({ showPlots: !showPlots }, this.plotClassInfo(this.state.showPlots));
+
+                            }}>Toggle Median Grade Plot</Button>
+                        </div>
+                    </div>
+                </div>
+                <div class="extra5">
+
+                    <hr />
+                    <div class="centered">
+                        {/* { this.state.loading && <iframe src="https://giphy.com/embed/3oEjI6SIIHBdRxXI40" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe> } */}
+                        {this.state.loading && <img id="loading" src={loadingGIF} alt="loading"></img>}
+                    </div>
+
+
+                    <div id="class-plots" class="centered"></div>
+                    <div style={{ align: "center" }}>
+                        <table id="class-info-table">
+                            <thead id="class-info-header">
+                                <tr id="class-info-header-row"></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+
+                        {list}
+
+                    </div>
+                </div>
+            </div>
         )
     }
 }
