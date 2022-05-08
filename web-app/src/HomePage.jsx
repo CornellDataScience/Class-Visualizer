@@ -518,6 +518,8 @@ export default class HomePage extends Component {
         for (var i = 0; i < buts.length; i++) {
             buts[i].style.backgroundColor = '#bebbf7';
         }
+        let anyi = document.getElementById("any");
+        anyi.style.backgroundColor = "#261f1f"
         this.createViz();
         d3.selectAll('.text-input').on('change', this.plotClassInfo)
         d3.selectAll('.slider').on('change', this.plotClassInfo)
@@ -693,7 +695,7 @@ export default class HomePage extends Component {
                         <div class="col">
                             <ButtonToolbar className="justify-content-center" aria-label="Toolbar with Button groups">
                                 <ButtonGroup aria-label="First group" id="buts" class="bsClass" onClick={this.updateMedianGrade}>
-                                    <Button variant="secondary" value="Any" class="bb">Any</Button>{' '}
+                                    <Button variant="secondary" value="Any" id="any" class="bb">Any</Button>{' '}
                                     <Button variant="secondary" value="A+" class="bb">A+</Button>{' '}
                                     <Button variant="secondary" value="A" class="bb">A</Button>{' '}
                                     <Button variant="secondary" value="A-" class="bb">A-</Button>{' '}
