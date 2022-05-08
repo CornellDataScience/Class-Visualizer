@@ -9,6 +9,8 @@ import CDSLogo from './images/cds_logo.png';
 import EZALogo from './images/ez-a-logo.png'
 import loadingGIF from './images/hourglass.gif';
 import Switch from "react-switch";
+import { ReactSearchAutocomplete } from 'react-search-autocomplete'
+
 let show = false;
 
 
@@ -70,6 +72,7 @@ export default class HomePage extends Component {
         this.toggleTableInfo = this.toggleTableInfo.bind(this);
         this.generatePlots = this.generatePlots.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.getDepts = this.getDepts.bind(this);
 
         this.setSliderVal1 = this.setSliderVal1.bind(this);
         this.setSliderVal2 = this.setSliderVal2.bind(this);
@@ -79,6 +82,16 @@ export default class HomePage extends Component {
         this.setSliderVal6 = this.setSliderVal6.bind(this)
         this.setSliderVal7 = this.setSliderVal7.bind(this)
         this.setSliderVal8 = this.setSliderVal8.bind(this)
+
+    }
+
+    getDepts() {
+        var items = [new Set(this.state.fullData['Department'])];
+        var result = []
+        for (let i = 0; i < items.length - 1; i++) {
+            result.push({ id: 0, name: items[i] })
+        }
+        return result
     }
 
     handleChange(checked) {
@@ -485,7 +498,15 @@ export default class HomePage extends Component {
     }
 
     updateMedianGrade(e) {
-        // list of all grades at the selected and above
+        // console.log(e.target)
+        // // list of all grades at the selected and above
+        // let buts = document.querySelector("#buts").querySelector(".bb");
+        // console.log(buts)
+        // for (var i = 0; i < buts.length; i++) {
+        //     console.log(buts[i]);
+        //     buts[i].style.backGroundColor = "#302d86";
+        // }
+        // e.target.style.backgroundColor = "#261f1f";
         if (e.target.value === "Any") {
             this.setState({ medianGrades: this.allGrades }, this.plotClassInfo);
         } else {
@@ -503,6 +524,8 @@ export default class HomePage extends Component {
     componentDidUpdate() {
         //this.plotClassInfo() // causes infinite loop
     }
+
+
 
     render() {
         let list;
@@ -529,6 +552,7 @@ export default class HomePage extends Component {
                             <div>
                                 <label for="check-1" class="box-label">Department</label>
                                 <input class="text-input" id='department-text' type="text" placeholder="CS"></input>
+                                {/* <ReactSearchAutocomplete items={this.getDepts()} autoFocus></ReactSearchAutocomplete> */}
                                 <br></br>
                             </div>
                         </div>
@@ -579,7 +603,7 @@ export default class HomePage extends Component {
 
 
 
-                <div class="row my-0 extra">
+                <div class="row extra">
                     <hr />
                     <div class="col my-0">
                         <div>
@@ -638,10 +662,12 @@ export default class HomePage extends Component {
                     </div>
 
                 </div>
-                <div class="row">
+                <div class="row mro">
                     <div class="col">
-                        <div class="centered disclaimer">
-                            <p>From <a href="https://www.ratemyprofessors.com">ratemyprofessors.com</a> and <a href="https://www.cureviews.org/">cureviews.org</a></p>
+                        <div class="centered disclaimer extra2 mr">
+                            <p>Median grade data was taken from student generated spreadsheets.<br /> Other data was taken
+                                from the Cornell class roster, <a href="https://www.ratemyprofessors.com">
+                                    ratemyprofessors.com</a> and <a href="https://www.cureviews.org/">cureviews.org</a></p>
                         </div>
                     </div>
                 </div>
@@ -664,22 +690,50 @@ export default class HomePage extends Component {
 
                         <div class="col">
                             <ButtonToolbar className="justify-content-center" aria-label="Toolbar with Button groups">
-                                <ButtonGroup aria-label="First group" onClick={this.updateMedianGrade}>
-                                    <Button variant="secondary" value="Any">Any</Button>{' '}
-                                    <Button variant="secondary" value="A+">A+</Button>{' '}
-                                    <Button variant="secondary" value="A">A</Button>{' '}
-                                    <Button variant="secondary" value="A-">A-</Button>{' '}
-                                    <Button variant="secondary" value="B+">B+</Button>{' '}
-                                    <Button variant="secondary" value="B">B</Button>{' '}
-                                    <Button variant="secondary" value="B-">B-</Button>
+                                <ButtonGroup aria-label="First group" id="buts" onClick={this.updateMedianGrade}>
+                                    <Button variant="secondary" value="Any" class="bb">Any</Button>{' '}
+                                    <Button variant="secondary" value="A+" class="bb">A+</Button>{' '}
+                                    <Button variant="secondary" value="A" class="bb">A</Button>{' '}
+                                    <Button variant="secondary" value="A-" class="bb">A-</Button>{' '}
+                                    <Button variant="secondary" value="B+" class="bb">B+</Button>{' '}
+                                    <Button variant="secondary" value="B" class="bb">B</Button>{' '}
+                                    <Button variant="secondary" value="B-" class="bb">B-</Button>
                                 </ButtonGroup>
                             </ButtonToolbar>
                             <br />
-                            <div class="centered disclaimer">
-                                <i>Disclaimer: We scraped median grade data from student generated spreadsheets.</i>
-                            </div>
+
                         </div>
-                        <div class="col rightcol">
+                        <div class="col rightcol" id="switchdiv">
+                            <label>
+                                <span id="show">Show graphs</span>
+                                <Switch id="myswitch" onChange={this.handleChange} checked={this.state.checked} />
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row botrow">
+                        <div id="CSVLink" class="col csvdiv">
+                            <label></label><br></br>
+
+                            <CSVLink data={this.state.savedClasses} id="export-button" headers={this.state.headers} filename={'Saved_Classes.csv'}
+                                onClick={event => {
+                                    if (this.state.savedClasses.length !== 0) { return true } else {
+                                        var txt = document.getElementById("no-save");
+                                        txt.style.display = "inline-block";
+                                        setTimeout(function () {
+                                            txt.style.display = "none";
+                                        }, 2000
+                                        )
+
+                                        return false;
+                                    }
+
+                                }}
+                            >Export Saved Classes to CSV</CSVLink>
+                            <p id="no-save">No saved classes to export</p>
+
+                        </div>
+
+                        <div class="col rightcol" id="sortdiv">
                             <label>Sort by</label>
                             <br></br>
 
@@ -692,22 +746,11 @@ export default class HomePage extends Component {
                                 <option value="Prof Difficulty">Prof Difficulty</option>
                                 <option value="Median Grade">Median Grade</option>
                             </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div id="CSVLink" class="col">
-                            <CSVLink data={this.state.savedClasses} id="export-button" headers={this.state.headers} filename={'Saved_Classes.csv'}>Export to CSV</CSVLink>
-                        </div>
-
-                        <div class="col rightcol">
                             {/* <Button type="checkbox" onClick={() => {
                                 this.setState({ showPlots: !showPlots }, this.plotClassInfo(this.state.showPlots));
 
                             }}>Toggle Median Grade Plot</Button> */}
-                            <label>
-                                <span id="show">Show graphs</span>
-                                <Switch id="myswitch" onChange={this.handleChange} checked={this.state.checked} />
-                            </label>
+
                         </div>
                     </div>
                 </div>

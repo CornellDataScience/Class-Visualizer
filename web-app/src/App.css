@@ -142,9 +142,7 @@ html {
   white-space: nowrap;
 }
 
-.text-row {
-  padding: 5px 250px;
-}
+
 
 .subcol {
   width: 100%;
@@ -160,7 +158,7 @@ html {
 .text-input {
   width: 120px;
   font-size: 15px;
-  padding: 8px;
+  padding-left: 8px;
 }
 
 #semester-dropdown {
@@ -363,11 +361,7 @@ html {
   /* align-items: center; */
 }
 
-.disclaimer {
-  color: rgb(183, 183, 183);
-  font-size: 10px;
-  font-style: italic;
-}
+
 
 .slider {
   position: relative;
@@ -378,6 +372,8 @@ html {
   position: relative;
   top: -60px;
 }
+
+
 
 .extra2 {
   position: relative;
@@ -391,7 +387,7 @@ html {
 
 .extra4 {
   position: relative;
-  top: -175px;
+  top: -225px;
 }
 
 .extra5 {
@@ -485,6 +481,7 @@ tbody>:nth-child(1n)>:first-child {
   border-left: 0px;
 }
 
+
 tbody>:nth-child(1n)>:last-child {
   border-right: 0px;
 }
@@ -500,6 +497,7 @@ tr {
 
 #CSVLink {
   text-align: left;
+  padding-top: 20px;
 }
 
 .toprow {
@@ -512,11 +510,12 @@ tr {
 .logo {
   height: 75px;
   position: relative;
-  left: 20px;
+  left: 10px;
+  top: -10px;
 }
 
 #eza {
-  height: 130px;
+  height: 110px;
   width: auto;
   text-align: center;
   z-index: -1;
@@ -526,4 +525,40 @@ tr {
   margin-left: auto;
   margin-right: auto;
   top: -100px;
+}
+
+.botrow {
+  padding-top: 20px;
+  padding-bottom: 0px;
+  vertical-align: bottom;
+
+}
+
+#no-save {
+  display: none;
+  color: red;
+  font-size: 10px;
+  padding-left: 5px;
+}
+
+.text-row {
+  padding: 5px 250px;
+  white-space: nowrap;
+  left: -50px;
+  position: initial;
+}
+
+.disclaimer {
+  color: rgb(183, 183, 183);
+  font-size: 8px;
+  font-style: italic;
+  padding-bottom: 0px;
+  position: relative;
+  top: -70px;
+}
+
+#sortdiv {
+  vertical-align: bottom;
+  position: relative;
+  top: 25px;
 }
