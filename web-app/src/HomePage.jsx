@@ -436,7 +436,7 @@ export default class HomePage extends Component {
                 let d1w = d1['CU_Reviews_Rating'];
                 let d2w = d2['CU_Reviews_Rating'];
                 if (d1w !== "" && d2w !== "") {
-                    return Number(d1w) - Number(d2w);
+                    return - (Number(d1w) - Number(d2w));
                 } else if (d1w !== "") {
                     return -1
                 } else if (d2w !== "") {
