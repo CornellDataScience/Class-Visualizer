@@ -43,6 +43,7 @@ export default class HomePage extends Component {
                 'Class Difficulty', 'Class Workload', 'Professor Difficulty', 'Start Time', 'End Time'],
             loading: true,
             checked: false,
+            medianChecked: "Any",
         };
         this.allGrades = ['B-', 'B', 'B+', 'A-', 'A', 'A+'];
         this.fieldMapping = {
@@ -173,8 +174,8 @@ export default class HomePage extends Component {
     generatePlots(classData, change) {
 
         let margin = { top: 30, right: 30, bottom: 70, left: 60 },
-            width = 460 - margin.left - margin.right,
-            height = 400 - margin.top - margin.bottom;
+            width = 400 - margin.left - margin.right,
+            height = 300 - margin.top - margin.bottom;
 
         let div = d3.select("#class-plots")
 
@@ -498,15 +499,12 @@ export default class HomePage extends Component {
     }
 
     updateMedianGrade(e) {
-        // console.log(e.target)
-        // // list of all grades at the selected and above
-        // let buts = document.querySelector("#buts").querySelector(".bb");
-        // console.log(buts)
-        // for (var i = 0; i < buts.length; i++) {
-        //     console.log(buts[i]);
-        //     buts[i].style.backGroundColor = "#302d86";
-        // }
-        // e.target.style.backgroundColor = "#261f1f";
+        // list of all grades at the selected and above
+        let buts = document.querySelector("#buts").children;
+        for (var i = 0; i < buts.length; i++) {
+            buts[i].style.backgroundColor = '#bebbf7';
+        }
+        e.target.style.backgroundColor = "#261f1f";
         if (e.target.value === "Any") {
             this.setState({ medianGrades: this.allGrades }, this.plotClassInfo);
         } else {
@@ -516,6 +514,10 @@ export default class HomePage extends Component {
     }
 
     componentDidMount() {
+        let buts = document.querySelector("#buts").children;
+        for (var i = 0; i < buts.length; i++) {
+            buts[i].style.backgroundColor = '#bebbf7';
+        }
         this.createViz();
         d3.selectAll('.text-input').on('change', this.plotClassInfo)
         d3.selectAll('.slider').on('change', this.plotClassInfo)
@@ -690,7 +692,7 @@ export default class HomePage extends Component {
 
                         <div class="col">
                             <ButtonToolbar className="justify-content-center" aria-label="Toolbar with Button groups">
-                                <ButtonGroup aria-label="First group" id="buts" onClick={this.updateMedianGrade}>
+                                <ButtonGroup aria-label="First group" id="buts" class="bsClass" onClick={this.updateMedianGrade}>
                                     <Button variant="secondary" value="Any" class="bb">Any</Button>{' '}
                                     <Button variant="secondary" value="A+" class="bb">A+</Button>{' '}
                                     <Button variant="secondary" value="A" class="bb">A</Button>{' '}
