@@ -514,6 +514,7 @@ export default class HomePage extends Component {
     }
 
     componentDidMount() {
+        document.title = 'Cornell EZ-A'
         let buts = document.querySelector("#buts").children;
         for (var i = 0; i < buts.length; i++) {
             buts[i].style.backgroundColor = '#bebbf7';
