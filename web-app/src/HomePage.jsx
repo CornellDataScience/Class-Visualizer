@@ -6,7 +6,11 @@ import { BasicSlider } from './BasicSlider.jsx';
 import { Button, ButtonGroup, ButtonToolbar, Dropdown, DropdownButton, ToggleButton } from 'react-bootstrap';
 import { CSVLink } from 'react-csv';
 import CDSLogo from './images/cds_logo.png';
+import EZALogo from './images/ez-a-logo.png'
 import loadingGIF from './images/hourglass.gif';
+import Switch from "react-switch";
+let show = false;
+
 
 export default class HomePage extends Component {
 
@@ -36,9 +40,8 @@ export default class HomePage extends Component {
             headers: ['Department', 'Course Number', 'Course Name', 'Professor', 'Median Grade', 'Class Rating',
                 'Class Difficulty', 'Class Workload', 'Professor Difficulty', 'Start Time', 'End Time'],
             loading: true,
-            showPlots: false
+            checked: false,
         };
-
         this.allGrades = ['B-', 'B', 'B+', 'A-', 'A', 'A+'];
         this.fieldMapping = {
             'Dept': 'Department',
@@ -66,6 +69,7 @@ export default class HomePage extends Component {
         this.updateMedianGrade = this.updateMedianGrade.bind(this);
         this.toggleTableInfo = this.toggleTableInfo.bind(this);
         this.generatePlots = this.generatePlots.bind(this);
+        this.handleChange = this.handleChange.bind(this);
 
         this.setSliderVal1 = this.setSliderVal1.bind(this);
         this.setSliderVal2 = this.setSliderVal2.bind(this);
@@ -75,6 +79,10 @@ export default class HomePage extends Component {
         this.setSliderVal6 = this.setSliderVal6.bind(this)
         this.setSliderVal7 = this.setSliderVal7.bind(this)
         this.setSliderVal8 = this.setSliderVal8.bind(this)
+    }
+
+    handleChange(checked) {
+        this.setState({ checked }, this.plotClassInfo)
     }
 
     setSliderVal1(newVal) {
@@ -147,6 +155,8 @@ export default class HomePage extends Component {
 
     // }
 
+
+
     generatePlots(classData, change) {
 
         let margin = { top: 30, right: 30, bottom: 70, left: 60 },
@@ -156,8 +166,7 @@ export default class HomePage extends Component {
         let div = d3.select("#class-plots")
 
         div.selectAll("*").remove()
-
-        if (change) {
+        if (this.state.checked) {
             let svg = div.selectAll('svg')
                 .data([1])
                 .join('svg')
@@ -227,7 +236,6 @@ export default class HomePage extends Component {
         this.setState({ loading: true });
         let class_data = this.updateSearch()
         this.generatePlots(class_data, change);
-
         let list = d3.select('#class-info');
 
         let colors = ['#e1e0f6', '#bebbf7']
@@ -499,14 +507,22 @@ export default class HomePage extends Component {
     render() {
         let list;
 
-        let showPlots = this.state.showPlots;
 
         return (
             <div className="Home-Page App">
                 <br />
-                <h1 class="centered">Cornell EZ-A</h1>
-                <img src={CDSLogo} alt="cds logo" class="logo"></img>
+                {/* <h1 class="centered">Cornell EZ-A</h1> */}
+                <div class="toprow">
+                    <div class="leftcol">
+                        <img src={CDSLogo} alt="cds logo" class="logo"></img>
+                    </div>
+                    <div >
+                        <img id="eza" src={EZALogo} alt="Cornell EZ-A"></img>
+                    </div>
+                </div>
+                <div class="row">
 
+                </div>
                 <div class="extra3">
                     <div class="row text-row">
                         <div class="col">
@@ -517,10 +533,10 @@ export default class HomePage extends Component {
                             </div>
                         </div>
 
-                        <div class="col midcol">
+                        <div class="col ">
                             <div>
                                 <label for="check-5" class="box-label">Course Name</label>
-                                <input class="text-input" id='course-name-text' type="text" placeholder="Introduction to Computing Using Python"></input>
+                                <input class="text-input" id='course-name-text' type="text" placeholder="Intro to Python"></input>
                                 <br></br>
                             </div>
                         </div>
@@ -544,7 +560,7 @@ export default class HomePage extends Component {
                             </div>
                         </div>
 
-                        <div class="col midcol">
+                        <div class="col ">
                             <label for="check-4" class="box-label">Course Number</label>
                             <input class="text-input" id='course-num-text' type="text" placeholder="4998"></input>
                             <br></br>
@@ -611,17 +627,24 @@ export default class HomePage extends Component {
                     <div class="col my-0 extra3">
                         <div>
                             <div class="subrow">
-                                <div class="col extra-padding">
+                                <div class="col extra-padding rightcol">
                                     <label for="check-9">Class Workload</label>
                                 </div>
-                                <div class="col">
+                                <div class="col rightcol">
                                     <BasicSlider id="class-work-slider" changeFunc={this.plotClassInfo} updateVal1={this.setSliderVal7} updateVal2={this.setSliderVal8} minimum={1} maximum={5} time={false} ></BasicSlider>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="centered disclaimer">
+                            <p>From <a href="https://www.ratemyprofessors.com">ratemyprofessors.com</a> and <a href="https://www.cureviews.org/">cureviews.org</a></p>
+                        </div>
+                    </div>
+                </div>
                 <div class="extra4">
                     <hr />
 
@@ -676,11 +699,15 @@ export default class HomePage extends Component {
                             <CSVLink data={this.state.savedClasses} id="export-button" headers={this.state.headers} filename={'Saved_Classes.csv'}>Export to CSV</CSVLink>
                         </div>
 
-                        <div class="col">
-                            <Button type="checkbox" onClick={() => {
+                        <div class="col rightcol">
+                            {/* <Button type="checkbox" onClick={() => {
                                 this.setState({ showPlots: !showPlots }, this.plotClassInfo(this.state.showPlots));
 
-                            }}>Toggle Median Grade Plot</Button>
+                            }}>Toggle Median Grade Plot</Button> */}
+                            <label>
+                                <span id="show">Show graphs</span>
+                                <Switch id="myswitch" onChange={this.handleChange} checked={this.state.checked} />
+                            </label>
                         </div>
                     </div>
                 </div>
