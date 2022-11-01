@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as d3 from 'd3';
 import fullDataFileSP from './data/FullerData_CUReviews_shortened.csv';
 import fullDataFile from './data/FullerData_CUReviews_FA22_shortened.csv';
+import fullDataSP23 from './data/FullerData_CUreviews_SP23_shortened.csv';
 import { BasicSlider } from './BasicSlider.jsx';
 import { Button, ButtonGroup, ButtonToolbar, Dropdown, DropdownButton, ToggleButton } from 'react-bootstrap';
 import { CSVLink } from 'react-csv';
@@ -133,12 +134,13 @@ export default class HomePage extends Component {
 
     async createViz() {
         let div = d3.select('#viz');
-        let data = await d3.csv(fullDataFile);
-        let data2 = await d3.csv(fullDataFileSP);
-
-        this.setState({ fullData: data });
-        this.setState({ fallData: data });
-        this.setState({ springData: data2 });
+        let dataSP23 = await d3.csv(fullDataSP23);
+        let dataFA22 = await d3.csv(fullDataFile);
+        let dataSP22 = await d3.csv(fullDataFileSP);
+        this.setState({ fullData: dataSP23 });
+        this.setState({ spring22Data: dataSP23 });
+        this.setState({ fallData: dataFA22 });
+        this.setState({ springData: dataSP22 });
 
         let profs = [];
 
@@ -327,6 +329,8 @@ export default class HomePage extends Component {
             this.setState({ fullData: this.state.fallData, semesterText: "FA '22" }, this.plotClassInfo);
         } else if (semester === "SP '22") {
             this.setState({ fullData: this.state.springData, semesterText: "SP '22" }, this.plotClassInfo);
+        } else if (semester === "SP '23") {
+            this.setState({ fullData: this.state.spring22Data, semesterText: "SP '23" }, this.plotClassInfo);
         }
 
         // this.plotClassInfo();
@@ -688,6 +692,7 @@ export default class HomePage extends Component {
                             <label>Semester</label>
                             <br></br>
                             <select id="semester-dropdown" title={this.state.semesterText} onChange={this.updateSemester}>
+                                <option value="SP '23">SP '23</option>
                                 <option value="FA '22">FA '22</option>
                                 <option value="SP '22">SP '22</option>
                             </select>
