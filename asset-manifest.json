@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/Class-Visualizer/static/css/main.9fd15885.css",
-    "main.js": "/Class-Visualizer/static/js/main.895aab79.js",
+    "main.js": "/Class-Visualizer/static/js/main.8e497c22.js",
     "static/js/787.c6006e9a.chunk.js": "/Class-Visualizer/static/js/787.c6006e9a.chunk.js",
     "static/media/FullerData_CUReviews_shortened.csv": "/Class-Visualizer/static/media/FullerData_CUReviews_shortened.ca8c142028f24865a701.csv",
     "static/media/FullerData_CUReviews_FA22_shortened.csv": "/Class-Visualizer/static/media/FullerData_CUReviews_FA22_shortened.6112388b0b7a5d247962.csv",
@@ -11,11 +11,11 @@
     "static/media/logo.svg": "/Class-Visualizer/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/Class-Visualizer/index.html",
     "main.9fd15885.css.map": "/Class-Visualizer/static/css/main.9fd15885.css.map",
-    "main.895aab79.js.map": "/Class-Visualizer/static/js/main.895aab79.js.map",
+    "main.8e497c22.js.map": "/Class-Visualizer/static/js/main.8e497c22.js.map",
     "787.c6006e9a.chunk.js.map": "/Class-Visualizer/static/js/787.c6006e9a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.9fd15885.css",
-    "static/js/main.895aab79.js"
+    "static/js/main.8e497c22.js"
   ]
 }
